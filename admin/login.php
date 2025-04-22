@@ -15,6 +15,7 @@ ob_end_flush();
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <link rel="icon" href="assets/img/logo.png" type="image/png">
   <title><?php echo $_SESSION['system']['name'] ?></title>
   <?php include('./header.php'); ?>
   <?php
@@ -37,11 +38,11 @@ ob_end_flush();
   
   .login-container {
     display: flex;
-    width: 900px;
+    width: 910px;
     max-width: 90%;
     height: 500px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    border-radius: 15px;
+    box-shadow: 0 0px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
     overflow: hidden;
     background-color: white;
   }
@@ -104,12 +105,14 @@ ob_end_flush();
     font-size: 1.5rem;
     font-weight: bold;
     color: #333;
+    text-align: center;
   }
   
   .welcome-text p {
     margin: 0;
     color: #666;
     font-size: 0.9rem;
+    text-align: center;
   }
   
   .form-group {
@@ -147,6 +150,7 @@ ob_end_flush();
   
   .remember-me input {
     margin-right: 5px;
+    margin-bottom: 6px;
   }
   
   .forgot-password {
@@ -190,11 +194,11 @@ ob_end_flush();
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 15px;
+    padding: 8px 15px;
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: 3px;
     cursor: pointer;
-    width: 120px;
+    width: 110px;
     background: white;
   }
   
