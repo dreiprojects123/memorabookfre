@@ -1632,7 +1632,7 @@ a.nav-item {
     padding: .75rem 1.25rem;
     margin-bottom: -1px;
     border: 1px solid rgba(0,0,0,.125);
-    background-color: #ffffffc4;
+    background-color: rgba(252, 251, 251, 0.27);
     color: #484343;
     font-weight: 600;
 }
@@ -1729,3 +1729,8 @@ span.select2-selection.select2-selection--single {
 }
 span.select2-selection__arrow {
     top: .3rem !important;
+}
+
+.gallerylist, #manage-gallery{
+  margin-top: 20px;
+}

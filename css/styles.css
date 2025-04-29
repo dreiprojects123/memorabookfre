@@ -159,13 +159,12 @@ sup {
 }
 
 a {
-  color: #007bff;
+  color: #060707;
   text-decoration: none;
   background-color: transparent;
 }
 a:hover {
-  color: #d6370c;
-  text-decoration: underline;
+  color: #283333;
 }
 
 a:not([href]) {
@@ -4400,7 +4399,6 @@ input[type=button].btn-block {
 .card-header {
   padding: 0.75rem 1.25rem;
   margin-bottom: 0;
-  background-color: rgba(0, 0, 0, 0.03);
   border-bottom: 1px solid rgba(0, 0, 0, 0.125);
 }
 .card-header:first-child {
@@ -10094,16 +10092,16 @@ hr.light {
 }
 
 header.masthead {
-  padding-top: 10rem;
+  padding-top: 0rem;
   padding-bottom: calc(10rem - 4.5rem);
-  background: linear-gradient(to bottom, rgb(0 0 0 / 40%) 0%, rgb(245 242 240 / 45%) 100%), url(../assets/img/theater-bg.jpg);
+  background: linear-gradient(to bottom, rgb(0 0 0 / 40%) 0%, rgb(245 242 240 / 45%) 100%), url(../assets/img/MainBefore.jpg);
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: scroll;
   background-size: cover;
 }
 header.masthead h1 {
-  font-size: 2.25rem;
+  font-size: 1rem;
 }
 @media (min-width: 992px) {
   header.masthead {
@@ -10116,12 +10114,12 @@ header.masthead h1 {
     font-size: 1.15rem;
   }
   header.masthead h1 {
-    font-size: 3rem;
+    font-size: 1rem;
   }
 }
 @media (min-width: 1200px) {
   header.masthead h1 {
-    font-size: 3.5rem;
+    font-size: 30px;
   }
 }
 
