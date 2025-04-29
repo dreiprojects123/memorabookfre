@@ -41,7 +41,7 @@
 			<!-- FORM Panel -->
 
 			<!-- Table Panel -->
-			<div class="col-md-8">
+			<div class="col-md-8 gallerylist">
 				<div class="card">
 					<div class="card-header">
 						<b>gallery List</b>
