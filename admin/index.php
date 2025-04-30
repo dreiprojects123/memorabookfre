@@ -19,7 +19,7 @@
 </head>
 <style>
 	body{
-        background: #80808045;
+        background:rgba(252, 251, 251, 0.27);
   }
   .modal-dialog.large {
     width: 80% !important;

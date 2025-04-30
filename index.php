@@ -51,7 +51,7 @@
     max-width: calc(100%);
   }
   body, footer {
-    background: #000000e6 !important;
+    background:rgba(242, 242, 241, 0.42) !important;
 }
  
 
@@ -168,24 +168,23 @@ a.jqte_tool_label.unselectable {
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-lg-8 text-center">
-                        <h2 class="mt-0 text-white">Contact us</h2>
-                        <hr class="divider my-4" />
+                        <h2 class="mt-0 section-heading">Contact us</h2>
+                       
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-4 ml-auto text-center mb-5 mb-lg-0">
                         <i class="fas fa-phone fa-3x mb-3 text-muted"></i>
-                        <div class="text-white"><?php echo $_SESSION['system']['contact'] ?></div>
+                        <div class="text-black"><?php echo $_SESSION['system']['contact'] ?></div>
                     </div>
                     <div class="col-lg-4 mr-auto text-center">
                         <i class="fas fa-envelope fa-3x mb-3 text-muted"></i>
-                        <!-- Make sure to change the email address in BOTH the anchor text and the link target below!-->
                         <a class="d-block" href="mailto:<?php echo $_SESSION['system']['email'] ?>"><?php echo $_SESSION['system']['email'] ?></a>
                     </div>
                 </div>
             </div>
             <br>
-            <div class="container"><div class="small text-center text-muted">Copyright © 2020 - <?php echo $_SESSION['system']['name'] ?> | <a href="https://www.sourcecodester.com/" target="_blank">Sourcecodester</a></div></div>
+            <div class="container"><div class="small text-center text-muted">Copyright © 2020 - <?php echo $_SESSION['system']['name'] ?></a></div>
         </footer>
         
        <?php include('footer.php') ?>
