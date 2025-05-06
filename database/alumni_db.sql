@@ -46,8 +46,11 @@ CREATE TABLE `alumnus_bio` (
 -- Dumping data for table `alumnus_bio`
 --
 
-INSERT INTO `alumnus_bio` (`id`, `firstname`, `middlename`, `lastname`, `gender`, `batch`, `course_id`, `email`, `connected_to`, `avatar`, `status`, `date_created`) VALUES
-(2, 'Mike', 'D', 'Williams', 'Male', 2009, 1, 'mwilliams@sample.com', 'My Company', '1602730260_avatar.jpg', 1, '2020-10-15');
+INSERT INTO `alumnus_bio` 
+(`id`, `firstname`, `middlename`, `lastname`, `gender`, `batch_id`, `course_id`, `email`, `connected_to`, `avatar`, `status`, `date_created`) 
+VALUES
+(2, 'Mike', 'D', 'Williams', 'Male', 1, 1, 'mwilliams@sample.com', 'My Company', '1602730260_avatar.jpg', 1, '2020-10-15');
+
 
 -- --------------------------------------------------------
 
@@ -185,17 +188,44 @@ INSERT INTO `forum_topics` (`id`, `title`, `description`, `user_id`, `date_creat
 -- Table structure for table `gallery`
 --
 
-CREATE TABLE `gallery` (
+CREATE TABLE `batch` (
   `id` int(30) NOT NULL,
-  `about` text NOT NULL,
-  `created` datetime NOT NULL DEFAULT current_timestamp()
+  `year` year(4) NOT NULL,
+  `created` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `gallery`
 --
 
-INSERT INTO `gallery` (`id`, `about`, `created`) VALUES
+INSERT INTO `batch` (`year`, `created`) VALUES
+(2020, '2020-06-01 10:00:00'),
+(2021, '2021-06-01 10:00:00'),
+(2022, '2022-06-01 10:00:00'),
+(2023, '2023-06-01 10:00:00'),
+(2024, '2024-06-01 10:00:00'),
+(2024, '2024-06-01 10:00:00');
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gallery`
+--
+
+CREATE TABLE `gallery` (
+  `id` int(30) NOT NULL AUTO_INCREMENT,
+  `batch_id` INT(30) NOT NULL,
+  `about` text NOT NULL,
+  `created` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`batch_id`) REFERENCES `batch`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `gallery`
+--
+
+INSERT INTO `gallery` (`batch_id`, `about`, `created`) VALUES
 (1, 'Samplee', '2020-10-15 13:08:27'),
 (2, 'asdasd', '2020-10-15 13:15:37'),
 (3, 'asdasdrtgfdg', '2020-10-15 13:15:45'),
@@ -369,6 +399,10 @@ ALTER TABLE `gallery`
 --
 ALTER TABLE `system_settings`
   MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+ALTER TABLE `alumnus_bio`
+  CHANGE `batch` `batch_id` INT(30) NOT NULL,
+  ADD FOREIGN KEY (`batch_id`) REFERENCES `batch`(`id`) ON DELETE CASCADE;
 
 --
 -- AUTO_INCREMENT for table `users`

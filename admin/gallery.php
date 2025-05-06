@@ -24,7 +24,22 @@
 								<label class="control-label">Short Description</label>
 								<textarea class="form-control" name='about'></textarea>
 							</div>
-							
+							<div class="form-group">
+								<label class="control-label">Batch</label>
+								<select class="form-control" name="batch_id" >
+									<option value="" disabled selected>Select batch</option>
+									<?php
+									// Assuming you're using PHP and already connected to your database
+									$batch = $conn->query("SELECT id, year FROM batch ORDER BY year DESC");
+									while ($row = $batch->fetch_assoc()):
+									?>
+									<option value="<?php echo $row['id']; ?>">
+										Batch <?php echo $row['year']; ?>
+									</option>
+									<?php endwhile; ?>
+								</select>
+							</div>
+
 					</div>
 							
 					<div class="card-footer">
@@ -52,7 +67,8 @@
 								<tr>
 									<th class="text-center">#</th>
 									<th class="text-center">IMG</th>
-									<th class="text-center">Gallery</th>
+									<th class="text-center">Description</th>
+									<th class="text-center">Batch</th>
 									<th class="text-center">Action</th>
 								</tr>
 							</thead>
@@ -68,7 +84,12 @@
 										$img[$n[0]] = $val;
 									}
 								}
-								$gallery = $conn->query("SELECT * FROM gallery order by id asc");
+								$gallery = $conn->query("
+									SELECT g.*, b.year as batch_year 
+									FROM gallery g 
+									INNER JOIN batch b ON g.batch_id = b.id 
+									ORDER BY g.id ASC
+									");
 								while($row=$gallery->fetch_assoc()):
 								?>
 								<tr>
@@ -79,8 +100,11 @@
 									<td class="">
 										<?php echo $row['about'] ?>
 									</td>
+									<td class="">
+										<?php echo $row['batch_year'] ?>
+									</td>
 									<td class="text-center">
-										<button class="btn btn-sm btn-primary edit_gallery" type="button" data-id="<?php echo $row['id'] ?>" data-about="<?php echo $row['about'] ?>" data-src="<?php echo isset($img[$row['id']]) && is_file($fpath.'/'.$img[$row['id']]) ? $fpath.'/'.$img[$row['id']] :'' ?>" >Edit</button>
+										<button class="btn btn-sm btn-primary edit_gallery" type="button" data-id="<?php echo $row['id'] ?>" data-about="<?php echo $row['about'] ?>" data-batch_year="<?php echo $row['batch_id'] ?>" data-src="<?php echo isset($img[$row['id']]) && is_file($fpath.'/'.$img[$row['id']]) ? $fpath.'/'.$img[$row['id']] :'' ?>" >Edit</button>
 										<button class="btn btn-sm btn-danger delete_gallery" type="button" data-id="<?php echo $row['id'] ?>">Delete</button>
 									</td>
 								</tr>
@@ -112,15 +136,15 @@
 </style>
 <script>
 	function displayImg(input,_this) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-        	$('#cimg').attr('src', e.target.result);
-        }
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+			reader.onload = function (e) {
+				$('#cimg').attr('src', e.target.result);
+			}
 
-        reader.readAsDataURL(input.files[0]);
-    }
-}
+			reader.readAsDataURL(input.files[0]);
+		}
+	}
 	$('#manage-gallery').submit(function(e){
 		e.preventDefault()
 		start_load()
@@ -156,6 +180,9 @@
 		cat.get(0).reset()
 		cat.find("[name='id']").val($(this).attr('data-id'))
 		cat.find("[name='about']").val($(this).attr('data-about'))
+		// ✅ Fix: Convert data-batch_year into expected batch_id value
+		var batch_id = $(this).attr('data-batch_year')  // which actually holds the batch_id
+		cat.find("[name='batch_id']").val(batch_id)
 		cat.find("img").attr('src',$(this).attr('data-src'))
 		end_load()
 	})

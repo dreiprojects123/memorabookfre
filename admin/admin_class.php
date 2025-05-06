@@ -121,9 +121,9 @@ Class Action {
 		$chk = $this->db->query("SELECT * FROM users where username = '$email' ")->num_rows;
 		if($chk > 0){
 			return 2;
-			exit;
 		}
-			$save = $this->db->query("INSERT INTO users set ".$data);
+		
+		$save = $this->db->query("INSERT INTO users set ".$data);
 		if($save){
 			$uid = $this->db->insert_id;
 			$data = '';
@@ -151,6 +151,7 @@ Class Action {
 			}
 		}
 	}
+	
 	function update_account(){
 		extract($_POST);
 		$data = " name = '".$firstname.' '.$lastname."' ";
@@ -259,7 +260,7 @@ Class Action {
 			}
 		}
 		if(empty($id)){
-			$save = $this->db->query("INSERT INTO gallery set about = '$about' ");
+			$save = $this->db->query("INSERT INTO gallery set about = '$about', batch_id = '$batch_id' ");
 			if($save){
 				$id = $this->db->insert_id;
 				$folder = "assets/uploads/gallery/";

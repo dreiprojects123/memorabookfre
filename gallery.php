@@ -77,37 +77,36 @@ header.masthead,header.masthead:before {
                 <div class="row-items">
                 <div class="col-lg-12">
                     <div class="row">
-                <?php
-                $rtl ='rtl';
-                $ci= 0;
-                $img = array();
-                $fpath = 'admin/assets/uploads/gallery';
-                $files= is_dir($fpath) ? scandir($fpath) : array();
-                foreach($files as $val){
-                    if(!in_array($val, array('.','..'))){
-                        $n = explode('_',$val);
-                        $img[$n[0]] = $val;
+                    <?php
+                    $rtl ='rtl';
+                    $ci= 0;
+                    $img = array();
+                    $fpath = 'admin/assets/uploads/gallery';
+                    $files= is_dir($fpath) ? scandir($fpath) : array();
+                    foreach($files as $val){
+                        if(!in_array($val, array('.','..'))){
+                            $n = explode('_',$val);
+                            $img[$n[0]] = $val;
+                        }
                     }
-                }
-                $gallery = $conn->query("SELECT * from gallery order by id desc");
-                while($row = $gallery->fetch_assoc()):
-                   
-                    $ci++;
-                    if($ci < 3){
-                        $rtl = '';
-                    }else{
-                        $rtl = 'rtl';
-                    }
-                    if($ci == 4){
-                        $ci = 0;
-                    }
-                ?>
-                <div class="col-md-6">
+                    $gallery = $conn->query("SELECT * from gallery order by id desc");
+                    while($row = $gallery->fetch_assoc()):
+                    
+                        $ci++;
+                        if($ci < 3){
+                            $rtl = '';
+                        }else{
+                            $rtl = 'rtl';
+                        }
+                        if($ci == 4){
+                            $ci = 0;
+                        }
+                    ?>
+                <div class="col-md-4">
                 <div class="card gallery-list <?php echo $rtl ?>" data-id="<?php echo $row['id'] ?>">
-                        <div class="gallery-img" card-img-top>
-
-                            <img src="<?php echo isset($img[$row['id']]) && is_file($fpath.'/'.$img[$row['id']]) ? $fpath.'/'.$img[$row['id']] :'' ?>" alt="">
-                        </div>
+                    <div class="gallery-img" card-img-top>
+                        <img src="<?php echo isset($img[$row['id']]) && is_file($fpath.'/'.$img[$row['id']]) ? $fpath.'/'.$img[$row['id']] :'' ?>" alt="">
+                    </div>
                     <div class="card-body">
                         <div class="row align-items-center justify-content-center text-center h-100">
                             <div class="">
@@ -117,8 +116,6 @@ header.masthead,header.masthead:before {
                                 </div>
                             </div>
                         </div>
-                        
-
                     </div>
                 </div>
                 <br>
