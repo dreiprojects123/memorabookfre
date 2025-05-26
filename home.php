@@ -71,7 +71,7 @@ include 'admin/db_connect.php';
 }
 
 .compact-event {
-    flex: 0 0 calc(33.333% - 20px);
+    flex: 0 0 calc(33.333% - 30px);
     margin: 0 10px;
     border-radius: 8px;
     overflow: hidden;
@@ -103,7 +103,7 @@ include 'admin/db_connect.php';
 }
 
 .compact-event .card-body {
-    padding: 1.25rem;
+    padding: 1rem;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -122,6 +122,7 @@ include 'admin/db_connect.php';
     color: #666;
     margin-bottom: 0.75rem;
     display: flex;
+    text-indent: 3px;
     align-items: center;
 }
 
@@ -131,7 +132,7 @@ include 'admin/db_connect.php';
 }
 
 .compact-event .event-desc {
-    max-height: 60px;
+    max-height: 75px;
     overflow: hidden;
     text-overflow: ellipsis;
     margin-bottom: 1rem;
@@ -142,8 +143,23 @@ include 'admin/db_connect.php';
 .compact-event .read_more {
     margin-top: auto;
     align-self: center;
-    padding: 0.375rem 1rem;
-    transition: all 0.3s ease;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: white;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    text-transform: capitalize;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 /* Carousel navigation arrows */
