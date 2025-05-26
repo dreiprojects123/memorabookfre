@@ -104,8 +104,19 @@
 										<?php echo $row['batch_year'] ?>
 									</td>
 									<td class="text-center">
-										<button class="btn btn-sm btn-primary edit_gallery" type="button" data-id="<?php echo $row['id'] ?>" data-about="<?php echo $row['about'] ?>" data-batch_year="<?php echo $row['batch_id'] ?>" data-src="<?php echo isset($img[$row['id']]) && is_file($fpath.'/'.$img[$row['id']]) ? $fpath.'/'.$img[$row['id']] :'' ?>" >Edit</button>
-										<button class="btn btn-sm btn-danger delete_gallery" type="button" data-id="<?php echo $row['id'] ?>">Delete</button>
+										<button class="btn btn-sm btn-outline-primary edit_gallery" type="button"
+											data-id="<?php echo $row['id'] ?>"
+											data-about="<?php echo $row['about'] ?>"
+											data-batch_year="<?php echo $row['batch_id'] ?>"
+											data-src="<?php echo isset($img[$row['id']]) && is_file($fpath.'/'.$img[$row['id']]) ? $fpath.'/'.$img[$row['id']] :'' ?>"
+											title="Edit">
+											<i class="fas fa-edit"></i>
+										</button>
+										<button class="btn btn-sm btn-outline-danger delete_gallery" type="button"
+											data-id="<?php echo $row['id'] ?>"
+											title="Delete">
+											<i class="fas fa-trash"></i>
+										</button>
 									</td>
 								</tr>
 								<?php endwhile; ?>

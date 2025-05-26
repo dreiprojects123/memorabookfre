@@ -224,6 +224,24 @@ Class Action {
 	}
 
 	
+	function save_batch(){
+		extract($_POST);
+		$data = " batch = '$year' ";
+			if(empty($id)){
+				$save = $this->db->query("INSERT INTO batch set $data");
+			}else{
+				$save = $this->db->query("UPDATE batch set $data where id = $id");
+			}
+		if($save)
+			return 1;
+	}
+	function delete_batch(){
+		extract($_POST);
+		$delete = $this->db->query("DELETE FROM batch where id = ".$id);
+		if($delete){
+			return 1;
+		}
+	}
 	function save_course(){
 		extract($_POST);
 		$data = " course = '$course' ";

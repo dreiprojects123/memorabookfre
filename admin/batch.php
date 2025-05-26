@@ -6,19 +6,19 @@
 		<div class="row">
 			<!-- FORM Panel -->
 			<div class="col-md-4">
-			<form action="" id="manage-course">
+			<form action="" id="manage-batch">
 				<div class="card">
 					<div class="card-header">
-						    Course Form
+						    <b>Add/Create Batch</b>
 				  	</div>
 					<div class="card-body">
 							<input type="hidden" name="id">
 							<div class="form-group">
-								<label class="control-label">Course</label>
-								<input type="text" class="form-control" name="course">
+								<label class="control-label">Batch:</label>
+								<input type="text" class="form-control datepicker" name="batch" placeholder="Select Year">
 							</div>
 							
-					</div>
+					</div> 
 							
 					<div class="card-footer">
 						<div class="row">
@@ -37,41 +37,41 @@
 			<div class="col-md-8">
 				<div class="card">
 					<div class="card-header">
-						<b>course List</b>
+						<b>Batch Lists</b>
 					</div>
 					<div class="card-body">
 						<table class="table table-bordered table-hover">
 							<thead>
 								<tr>
 									<th class="text-center">#</th>
-									<th class="text-center">Course</th>
+									<th class="text-center">Batch Year</th>
 									<th class="text-center">Action</th>
 								</tr>
 							</thead>
 							<tbody>
 								<?php 
 								$i = 1;
-								$course = $conn->query("SELECT * FROM courses order by id asc");
+								$course = $conn->query("SELECT * FROM batch order by id asc");
 								while($row=$course->fetch_assoc()):
 								?>
 								<tr>
-									<td class="text-center"><?php echo $i++ ?></td>
+                                    <td class="text-center"><?php echo $i++ ?></td>
 									<td class="">
-										<?php echo $row['course'] ?>
+										<?php echo $row['year'] ?>
 									</td>
 									<td class="text-center">
-											<button class="btn btn-sm btn-outline-primary edit_event edit_course" type="button" 
-													data-id="<?php echo $row['id'] ?>" 
-													data-course="<?php echo $row['course'] ?>" 
-													title="Edit">
-												<i class="fas fa-edit"></i>
-											</button>
-											<button class="btn btn-sm btn-outline-danger delete_course" type="button" 
-													data-id="<?php echo $row['id'] ?>" 
-													title="Delete">
-												<i class="fas fa-trash"></i>
-											</button>
-										</td>
+										<button class="btn btn-sm btn-outline-primary edit_event edit_course" type="button" 
+												data-id="<?php echo $row['id'] ?>" 
+												data-year="<?php echo $row['year'] ?>" 
+												title="Edit">
+											<i class="fas fa-edit"></i>
+										</button>
+										<button class="btn btn-sm btn-outline-danger delete_course" type="button" 
+												data-id="<?php echo $row['id'] ?>" 
+												title="Delete">
+											<i class="fas fa-trash"></i>
+										</button>
+									</td>
 								</tr>
 								<?php endwhile; ?>
 							</tbody>
@@ -91,12 +91,18 @@
 	}
 </style>
 <script>
+    $('.datepicker').datepicker({
+        format: " yyyy", 
+        viewMode: "years", 
+        minViewMode: "years"
+    })
+
 	
-	$('#manage-course').submit(function(e){
+	$('#manage-batch').submit(function(e){
 		e.preventDefault()
 		start_load()
 		$.ajax({
-			url:'ajax.php?action=save_course',
+			url:'ajax.php?action=save_batch',
 			data: new FormData($(this)[0]),
 		    cache: false,
 		    contentType: false,
@@ -121,12 +127,12 @@
 			}
 		})
 	})
-	$('.edit_course').click(function(){
+	$('.edit_batch').click(function(){
 		start_load()
-		var cat = $('#manage-course')
+		var cat = $('#manage-batch')
 		cat.get(0).reset()
 		cat.find("[name='id']").val($(this).attr('data-id'))
-		cat.find("[name='course']").val($(this).attr('data-course'))
+		cat.find("[name='batch']").val($(this).attr('data-year'))
 		end_load()
 	})
 	$('.delete_course').click(function(){
