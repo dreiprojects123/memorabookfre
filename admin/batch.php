@@ -4,35 +4,49 @@
 	
 	<div class="col-lg-12">
 		<div class="row">
+		
 			<!-- FORM Panel -->
 			<div class="col-md-4">
-			<form action="" id="manage-batch">
+			<form action="" id="manage-batch" enctype="multipart/form-data">
 				<div class="card">
-					<div class="card-header">
-						    <b>Add/Create Batch</b>
-				  	</div>
-					<div class="card-body">
-							<input type="hidden" name="id">
-							<div class="form-group">
-								<label class="control-label">Batch:</label>
-								<input type="text" class="form-control datepicker" name="batch" placeholder="Select Year">
-							</div>
-							
-					</div> 
-							
-					<div class="card-footer">
-						<div class="row">
-							<div class="col-md-12">
-								<button class="btn btn-sm btn-primary col-sm-3 offset-md-3"> Save</button>
-								<button class="btn btn-sm btn-default col-sm-3" type="button" onclick="$('#manage-course').get(0).reset()"> Cancel</button>
-							</div>
-						</div>
+				<div class="card-header">
+					<b>Add/Create Batch</b>
+				</div>
+				<div class="card-body">
+					<input type="hidden" name="id">
+
+					<!-- Year Input -->
+					<div class="form-group">
+					<label class="control-label">Batch Year:</label>
+					<input type="text" class="form-control datepicker" name="batch" placeholder="Select Year">
 					</div>
+
+					<!-- Image Upload Input -->
+					<div class="form-group">
+					<label class="control-label">Batch Cover Image:</label>
+					<input type="file" class="form-control" name="img" accept="image/*" onchange="displayImg(this, $(this))">
+					</div>
+
+					<!-- Preview -->
+					<div class="form-group text-center">
+					<img id="cimg" src="#" alt="Preview" class="img-fluid img-thumbnail" style="max-height: 200px; display: none;">
+					</div>
+				</div>
+
+				<div class="card-footer">
+					<div class="row">
+					<div class="col-md-12 text-center">
+						<button class="btn btn-sm btn-primary col-sm-4">Save</button>
+						<button class="btn btn-sm btn-secondary col-sm-4" type="button" onclick="$('#manage-batch').get(0).reset()">Cancel</button>
+					</div>
+					</div>
+				</div>
 				</div>
 			</form>
 			</div>
 			<!-- FORM Panel -->
 
+			<!-- Table Panel -->
 			<!-- Table Panel -->
 			<div class="col-md-8">
 				<div class="card">
@@ -41,34 +55,40 @@
 					</div>
 					<div class="card-body">
 						<table class="table table-bordered table-hover">
-							<thead>
-								<tr>
-									<th class="text-center">#</th>
-									<th class="text-center">Batch Year</th>
-									<th class="text-center">Action</th>
+							<thead class="thead-light">
+								<tr class="text-center">
+									<th>#</th>
+									<th>Cover</th>
+									<th>Batch Year</th>
+									<th>Action</th>
 								</tr>
 							</thead>
 							<tbody>
 								<?php 
 								$i = 1;
-								$course = $conn->query("SELECT * FROM batch order by id asc");
-								while($row=$course->fetch_assoc()):
+								$batch = $conn->query("SELECT * FROM batch ORDER BY id ASC");
+								while($row = $batch->fetch_assoc()):
+									$cover = !empty($row['img']) && file_exists('assets/uploads/batch/'.$row['img']) 
+										? 'assets/uploads/batch/'.$row['img'] 
+										: 'assets/uploads/no-image.png'; // fallback image
 								?>
-								<tr>
-                                    <td class="text-center"><?php echo $i++ ?></td>
-									<td class="">
-										<?php echo $row['year'] ?>
+								<tr class="text-center align-middle">
+									<td><?php echo $i++ ?></td>
+									<td>
+										<img src="<?php echo $cover ?>" alt="cover" style="height:60px; width:auto; object-fit:cover;" class="img-thumbnail">
 									</td>
-									<td class="text-center">
-										<button class="btn btn-sm btn-outline-primary edit_event edit_course" type="button" 
-												data-id="<?php echo $row['id'] ?>" 
-												data-year="<?php echo $row['year'] ?>" 
-												title="Edit">
+									<td><?php echo $row['year'] ?></td>
+									<td>
+										<button class="btn btn-sm btn-outline-primary edit_event edit_batch" type="button" 
+											data-id="<?php echo $row['id'] ?>" 
+											data-year="<?php echo $row['year'] ?>" 
+											data-img="<?php echo htmlspecialchars($row['img'], ENT_QUOTES) ?>" 
+											title="Edit">
 											<i class="fas fa-edit"></i>
 										</button>
 										<button class="btn btn-sm btn-outline-danger delete_course" type="button" 
-												data-id="<?php echo $row['id'] ?>" 
-												title="Delete">
+											data-id="<?php echo $row['id'] ?>" 
+											title="Delete">
 											<i class="fas fa-trash"></i>
 										</button>
 									</td>
@@ -79,6 +99,8 @@
 					</div>
 				</div>
 			</div>
+			<!-- Table Panel -->
+
 			<!-- Table Panel -->
 		</div>
 	</div>	
@@ -91,6 +113,15 @@
 	}
 </style>
 <script>
+	function displayImg(input, _this) {
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+			reader.onload = function (e) {
+			$('#cimg').attr('src', e.target.result).show();
+			}
+			reader.readAsDataURL(input.files[0]);
+		}
+	}
     $('.datepicker').datepicker({
         format: " yyyy", 
         viewMode: "years", 
@@ -127,18 +158,27 @@
 			}
 		})
 	})
-	$('.edit_batch').click(function(){
-		start_load()
-		var cat = $('#manage-batch')
-		cat.get(0).reset()
-		cat.find("[name='id']").val($(this).attr('data-id'))
-		cat.find("[name='batch']").val($(this).attr('data-year'))
-		end_load()
+	// Edit batch button click
+	$('.edit_batch').click(function() {
+		start_load();
+		var form = $('#manage-batch');
+		form.get(0).reset();
+
+		form.find("[name='id']").val($(this).attr('data-id'));
+		form.find("[name='batch']").val($(this).attr('data-year'));
+
+		// Optional: load image preview if editing cover
+		var img = $(this).attr('data-img');
+		if (img) {
+			$('#cimg').attr('src', 'assets/uploads/batch/' + img).show();
+		}
+
+		end_load();
+	});
+	$('.delete_batch').click(function(){
+		_conf("Are you sure to delete this batch?","delete_batch",[$(this).attr('data-id')])
 	})
-	$('.delete_course').click(function(){
-		_conf("Are you sure to delete this course?","delete_course",[$(this).attr('data-id')])
-	})
-	function delete_course($id){
+	function delete_batch($id){
 		start_load()
 		$.ajax({
 			url:'ajax.php?action=delete_course',
