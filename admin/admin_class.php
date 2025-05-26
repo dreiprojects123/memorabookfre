@@ -225,16 +225,49 @@ Class Action {
 
 	
 	function save_batch(){
-		extract($_POST);
-		$data = " batch = '$year' ";
-			if(empty($id)){
-				$save = $this->db->query("INSERT INTO batch set $data");
-			}else{
-				$save = $this->db->query("UPDATE batch set $data where id = $id");
-			}
-		if($save)
-			return 1;
-	}
+    extract($_POST);
+
+    $img_name = '';
+    $folder = 'assets/uploads/batch/';
+    
+    // Create folder if it doesn't exist
+    if (!is_dir($folder)) {
+        mkdir($folder, 0777, true);
+    }
+
+    // Handle image upload
+    if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {
+        $ext = pathinfo($_FILES['img']['name'], PATHINFO_EXTENSION);
+        $img_name = 'batch_' . time() . '.' . $ext;
+        move_uploaded_file($_FILES['img']['tmp_name'], $folder . $img_name);
+    }
+
+    // Build SQL data string
+    $data = " year = '$batch' ";
+    if (!empty($img_name)) {
+        $data .= ", img = '$img_name' ";
+    }
+
+    // Insert or Update
+    if (empty($id)) {
+        $save = $this->db->query("INSERT INTO batch SET $data");
+    } else {
+        if (!empty($img_name)) {
+            // Optionally delete old image here
+            $qry = $this->db->query("SELECT img FROM batch WHERE id = $id");
+            if ($qry->num_rows > 0) {
+                $old_img = $qry->fetch_assoc()['img'];
+                if (is_file($folder . $old_img)) {
+                    unlink($folder . $old_img);
+                }
+            }
+        }
+        $save = $this->db->query("UPDATE batch SET $data WHERE id = $id");
+    }
+
+    if ($save) return 1;
+}
+
 	function delete_batch(){
 		extract($_POST);
 		$delete = $this->db->query("DELETE FROM batch where id = ".$id);

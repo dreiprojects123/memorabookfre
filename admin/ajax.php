@@ -60,12 +60,12 @@ if($action == "delete_course"){
 		echo $delete;
 }
 
-if($action == "save_course"){
+if($action == "save_batch"){
 	$save = $crud->save_batch();
 	if($save)
 		echo $save;
 }
-if($action == "delete_course"){
+if($action == "delete_batch"){
 	$delete = $crud->delete_batch();
 	if($delete)
 		echo $delete;
