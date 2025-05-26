@@ -121,9 +121,9 @@ Class Action {
 		$chk = $this->db->query("SELECT * FROM users where username = '$email' ")->num_rows;
 		if($chk > 0){
 			return 2;
-			exit;
 		}
-			$save = $this->db->query("INSERT INTO users set ".$data);
+		
+		$save = $this->db->query("INSERT INTO users set ".$data);
 		if($save){
 			$uid = $this->db->insert_id;
 			$data = '';
@@ -151,6 +151,7 @@ Class Action {
 			}
 		}
 	}
+	
 	function update_account(){
 		extract($_POST);
 		$data = " name = '".$firstname.' '.$lastname."' ";
@@ -223,6 +224,24 @@ Class Action {
 	}
 
 	
+	function save_batch(){
+		extract($_POST);
+		$data = " batch = '$year' ";
+			if(empty($id)){
+				$save = $this->db->query("INSERT INTO batch set $data");
+			}else{
+				$save = $this->db->query("UPDATE batch set $data where id = $id");
+			}
+		if($save)
+			return 1;
+	}
+	function delete_batch(){
+		extract($_POST);
+		$delete = $this->db->query("DELETE FROM batch where id = ".$id);
+		if($delete){
+			return 1;
+		}
+	}
 	function save_course(){
 		extract($_POST);
 		$data = " course = '$course' ";
@@ -247,50 +266,79 @@ Class Action {
 		if($update)
 			return 1;
 	}
-	function save_gallery(){
+	function save_gallery() {
 		extract($_POST);
 		$img = array();
-  		$fpath = 'assets/uploads/gallery';
-		$files= is_dir($fpath) ? scandir($fpath) : array();
-		foreach($files as $val){
-			if(!in_array($val, array('.','..'))){
-				$n = explode('_',$val);
+		$fpath = 'assets/uploads/gallery';
+		$files = is_dir($fpath) ? scandir($fpath) : array();
+
+		foreach ($files as $val) {
+			if (!in_array($val, array('.', '..'))) {
+				$n = explode('_', $val);
 				$img[$n[0]] = $val;
 			}
 		}
-		if(empty($id)){
-			$save = $this->db->query("INSERT INTO gallery set about = '$about' ");
-			if($save){
+
+		// Sanitize strings (if not using prepared statements)
+		$event_name = addslashes($event_name ?? '');
+		$title = addslashes($title ?? '');
+		$caption = addslashes($caption ?? '');
+		$contributor = addslashes($contributor ?? '');
+		$about = addslashes($about ?? '');
+		$batch_id = intval($batch_id ?? 0);
+
+		if (empty($id)) {
+			// INSERT
+			$save = $this->db->query("INSERT INTO gallery 
+				SET event_name = '$event_name', 
+					title = '$title', 
+					caption = '$caption', 
+					contributor = '$contributor', 
+					about = '$about', 
+					batch_id = '$batch_id' ");
+
+			if ($save) {
 				$id = $this->db->insert_id;
 				$folder = "assets/uploads/gallery/";
-				$file = explode('.',$_FILES['img']['name']);
-				$file = end($file);
-				if(is_file($folder.$id.'/_img'.'.'.$file))
-					unlink($folder.$id.'/_img'.'.'.$file);
-				if(isset($img[$id]))
-						unlink($folder.$img[$id]);
-				if($_FILES['img']['tmp_name'] != ''){
-					$fname = $id.'_img'.'.'.$file;
-					$move = move_uploaded_file($_FILES['img']['tmp_name'],'assets/uploads/gallery/'. $fname);
+				if ($_FILES['img']['tmp_name'] != '') {
+					$file_ext = pathinfo($_FILES['img']['name'], PATHINFO_EXTENSION);
+					$fname = $id . '_img.' . $file_ext;
+
+					// Delete old image if already exists
+					if (is_file($folder . $fname))
+						unlink($folder . $fname);
+					if (isset($img[$id]))
+						unlink($folder . $img[$id]);
+
+					$move = move_uploaded_file($_FILES['img']['tmp_name'], $folder . $fname);
 				}
 			}
-		}else{
-			$save = $this->db->query("UPDATE gallery set about = '$about' where id=".$id);
-			if($save){
-				if($_FILES['img']['tmp_name'] != ''){
-					$folder = "assets/uploads/gallery/";
-					$file = explode('.',$_FILES['img']['name']);
-					$file = end($file);
-					if(is_file($folder.$id.'/_img'.'.'.$file))
-						unlink($folder.$id.'/_img'.'.'.$file);
-					if(isset($img[$id]))
-						unlink($folder.$img[$id]);
-					$fname = $id.'_img'.'.'.$file;
-					$move = move_uploaded_file($_FILES['img']['tmp_name'],'assets/uploads/gallery/'. $fname);
-				}
+		} else {
+			// UPDATE
+			$save = $this->db->query("UPDATE gallery 
+				SET event_name = '$event_name', 
+					title = '$title', 
+					caption = '$caption', 
+					contributor = '$contributor', 
+					about = '$about', 
+					batch_id = '$batch_id' 
+				WHERE id = $id");
+
+			if ($save && $_FILES['img']['tmp_name'] != '') {
+				$folder = "assets/uploads/gallery/";
+				$file_ext = pathinfo($_FILES['img']['name'], PATHINFO_EXTENSION);
+				$fname = $id . '_img.' . $file_ext;
+
+				if (is_file($folder . $fname))
+					unlink($folder . $fname);
+				if (isset($img[$id]))
+					unlink($folder . $img[$id]);
+
+				$move = move_uploaded_file($_FILES['img']['tmp_name'], $folder . $fname);
 			}
 		}
-		if($save)
+
+		if ($save)
 			return 1;
 	}
 	function delete_gallery(){

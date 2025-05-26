@@ -66,9 +66,15 @@
 										 <p class="text-right"><?php echo $commits ?></p>
 									</td>
 									<td class="text-center">
-										<button class="btn btn-sm btn-outline-primary view_event" type="button" data-id="<?php echo $row['id'] ?>" >View</button>
-										<button class="btn btn-sm btn-outline-primary edit_event" type="button" data-id="<?php echo $row['id'] ?>" >Edit</button>
-										<button class="btn btn-sm btn-outline-danger delete_event" type="button" data-id="<?php echo $row['id'] ?>">Delete</button>
+										<button class="btn btn-sm btn-outline-primary view_event" type="button" data-id="<?php echo $row['id'] ?>" title="View">
+											<i class="fas fa-eye"></i>
+										</button>
+										<button class="btn btn-sm btn-outline-primary edit_event" type="button" data-id="<?php echo $row['id'] ?>" title="Edit">
+											<i class="fas fa-edit"></i>
+										</button>
+										<button class="btn btn-sm btn-outline-danger delete_event" type="button" data-id="<?php echo $row['id'] ?>" title="Delete">
+											<i class="fas fa-trash"></i>
+										</button>
 									</td>
 								</tr>
 								<?php endwhile; ?>
@@ -92,7 +98,7 @@
 	}
 	img{
 		max-width:100px;
-		max-height: :150px;
+		max-height:150px;
 	}
 </style>
 <script>
