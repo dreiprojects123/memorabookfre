@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <link rel="icon" href="assets/img/logo.png" type="image/x-icon">
+  </head>
     <?php
     session_start();
     include('admin/db_connect.php');
