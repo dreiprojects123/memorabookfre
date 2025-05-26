@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 26, 2025 at 07:08 AM
--- Server version: 10.4.27-MariaDB
--- PHP Version: 8.1.12
+-- Generation Time: Oct 16, 2020 at 05:17 AM
+-- Server version: 10.4.14-MariaDB
+-- PHP Version: 7.2.33
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -33,49 +33,24 @@ CREATE TABLE `alumnus_bio` (
   `middlename` varchar(200) NOT NULL,
   `lastname` varchar(200) NOT NULL,
   `gender` varchar(10) NOT NULL,
-  `batch_id` int(30) NOT NULL,
+  `batch` year(4) NOT NULL,
   `course_id` int(30) NOT NULL,
   `email` varchar(250) NOT NULL,
   `connected_to` text NOT NULL,
   `avatar` text NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0= Unverified, 1= Verified',
   `date_created` date NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `alumnus_bio`
 --
 
-INSERT INTO `alumnus_bio` (`id`, `firstname`, `middlename`, `lastname`, `gender`, `batch_id`, `course_id`, `email`, `connected_to`, `avatar`, `status`, `date_created`) VALUES
-(9, 'Anton', 'M.', 'Macatangay', 'Male', 5, 6, 'antonmacatangay@gmail.com', 'DYCI', '1748234280_Screenshot 2025-05-26 122705.png', 1, '2025-05-26'),
-(10, 'Justin Mark', 'F.', 'Padilla', 'Male', 5, 1, 'justinpadilla@gmail.com', 'DYCI', '1748234640_Screenshot 2025-05-26 124127.png', 1, '2025-05-26'),
-(11, 'Andrei', 'M.', 'Cruz', 'Male', 5, 1, 'andreicruz@gmail.com', 'DYCI', '1748234700_Screenshot 2025-05-26 124529.png', 1, '2025-05-26'),
-(12, 'Stephen Ivan', 'F.', 'Santiago', 'Male', 5, 1, 'stephenivan@gmail.com', 'DYCI', '1748234760_Screenshot 2025-05-26 124614.png', 1, '2025-05-26'),
-(13, 'Dharrell', 'Andrei', 'Montion', 'Male', 5, 1, 'dharrel@gmail.com', 'DYCI', '1748234820_Screenshot 2025-05-26 124728.png', 1, '2025-05-26'),
-(14, 'Ryan', 'F.', 'Fadrigalan', 'Male', 5, 1, 'ryanfadrigalan@gmail.com', 'DYCI', '1748234880_Screenshot 2025-05-26 124829.png', 1, '2025-05-26');
+INSERT INTO `alumnus_bio` 
+(`id`, `firstname`, `middlename`, `lastname`, `gender`, `batch_id`, `course_id`, `email`, `connected_to`, `avatar`, `status`, `date_created`) 
+VALUES
+(2, 'Mike', 'D', 'Williams', 'Male', 1, 1, 'mwilliams@sample.com', 'My Company', '1602730260_avatar.jpg', 1, '2020-10-15');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `batch`
---
-
-CREATE TABLE `batch` (
-  `id` int(30) NOT NULL,
-  `year` year(4) NOT NULL,
-  `created` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `batch`
---
-
-INSERT INTO `batch` (`id`, `year`, `created`) VALUES
-(1, 2021, '2025-05-07 10:57:12'),
-(2, 2022, '2025-05-21 17:50:59'),
-(3, 2023, '2025-05-21 17:50:59'),
-(4, 2024, '2025-05-21 17:52:18'),
-(5, 2025, '2025-05-21 17:52:18');
 
 -- --------------------------------------------------------
 
@@ -91,7 +66,7 @@ CREATE TABLE `careers` (
   `description` text NOT NULL,
   `user_id` int(30) NOT NULL,
   `date_created` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `careers`
@@ -111,16 +86,14 @@ CREATE TABLE `courses` (
   `id` int(30) NOT NULL,
   `course` text NOT NULL,
   `about` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `courses`
 --
 
 INSERT INTO `courses` (`id`, `course`, `about`) VALUES
-(1, 'BS Information Technology', 'Sample'),
-(6, 'BS Computer Science', ''),
-(7, 'BS Computer Engineering', '');
+(1, 'BS Information Technology', 'Sample');
 
 -- --------------------------------------------------------
 
@@ -135,14 +108,14 @@ CREATE TABLE `events` (
   `schedule` datetime NOT NULL,
   `banner` text NOT NULL,
   `date_created` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `events`
 --
 
 INSERT INTO `events` (`id`, `title`, `content`, `schedule`, `banner`, `date_created`) VALUES
-(6, 'CCS Retreat 2k25', 'Take a break, find peace, and connect deeper&mdash;join us on our upcoming CCS Retreat at Tagaytay Angel&rsquo;s Hills! Let&rsquo;s grow together, DYCIans!', '2025-06-03 06:00:00', '1748080800_angels.png', '2025-05-24 17:59:03');
+(1, 'Sample Event', '&lt;p style=&quot;margin-bottom: 15px; color: rgb(0, 0, 0); font-family: &amp;quot;Open Sans&amp;quot;, Arial, sans-serif; padding: 0px; text-align: justify;&quot;&gt;Cras a est hendrerit, egestas urna quis, ullamcorper elit. Nullam a felis eget dolor vulputate vehicula. In hac habitasse platea dictumst. Nunc est urna, gravida sit amet ligula ut, aliquam fermentum lorem. Vestibulum non suscipit velit, in rhoncus orci. Vivamus pulvinar quam nec leo semper facilisis quis eu magna. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum lectus lorem, iaculis sed nunc nec, lacinia auctor risus.&lt;/p&gt;&lt;p style=&quot;margin-bottom: 15px; color: rgb(0, 0, 0); font-family: &amp;quot;Open Sans&amp;quot;, Arial, sans-serif; padding: 0px; text-align: justify;&quot;&gt;Aenean elementum, risus eget rutrum dapibus, tellus leo eleifend leo, et mattis turpis quam eu turpis. Suspendisse commodo placerat tellus, quis faucibus metus euismod sed. Cras vitae risus in felis dignissim fermentum. Morbi aliquam nisi ipsum, id aliquam tortor congue eu. Sed fringilla convallis augue, et vulputate ante convallis vitae. Integer lacinia lacus at vehicula finibus. Nullam ultrices turpis dui, volutpat pulvinar augue placerat in. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Duis quam metus, sollicitudin a lectus non, tincidunt sagittis odio.&lt;/p&gt;', '2020-10-16 10:00:00', '1602813060_no-image-available.png', '2020-10-16 09:51:55');
 
 -- --------------------------------------------------------
 
@@ -154,16 +127,14 @@ CREATE TABLE `event_commits` (
   `id` int(30) NOT NULL,
   `event_id` int(30) NOT NULL,
   `user_id` int(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `event_commits`
 --
 
 INSERT INTO `event_commits` (`id`, `event_id`, `user_id`) VALUES
-(1, 1, 3),
-(2, 2, 18),
-(3, 2, 1);
+(1, 1, 3);
 
 -- --------------------------------------------------------
 
@@ -177,13 +148,14 @@ CREATE TABLE `forum_comments` (
   `comment` text NOT NULL,
   `user_id` int(30) NOT NULL,
   `date_created` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `forum_comments`
 --
 
 INSERT INTO `forum_comments` (`id`, `topic_id`, `comment`, `user_id`, `date_created`) VALUES
+(1, 3, 'Sample updated Comment', 3, '2020-10-15 15:46:03'),
 (3, 3, 'Sample', 1, '2020-10-16 08:48:02'),
 (5, 0, '', 1, '2020-10-16 09:49:34');
 
@@ -199,7 +171,7 @@ CREATE TABLE `forum_topics` (
   `description` text NOT NULL,
   `user_id` int(30) NOT NULL,
   `date_created` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `forum_topics`
@@ -216,27 +188,75 @@ INSERT INTO `forum_topics` (`id`, `title`, `description`, `user_id`, `date_creat
 -- Table structure for table `gallery`
 --
 
-CREATE TABLE `gallery` (
+CREATE TABLE `batch` (
   `id` int(30) NOT NULL,
-  `batch_id` int(30) NOT NULL,
-  `about` text NOT NULL,
-  `created` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `year` year(4) NOT NULL,
+  `created` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `gallery`
 --
 
-INSERT INTO `gallery` (`id`, `batch_id`, `about`, `created`) VALUES
-(18, 4, 'Empowered by knowledge, driven by purpose — DYCI Class of 2024.', '2025-05-24 18:11:25'),
-(19, 3, 'Beyond the gown and cap lies a journey just begun.', '2025-05-24 18:36:02'),
-(21, 5, 'Your education is a dress rehearsal for a life that is yours to lead. -Stephen Gordon', '2025-05-24 18:40:14'),
-(22, 5, 'Four years, countless memories, one proud moment. -Faith Marquez', '2025-05-24 18:41:08'),
-(23, 5, 'Together we learned. Together we grew. Together we soar. - Anton Bratan', '2025-05-24 18:42:22'),
-(24, 5, 'The best way to predict the future is to create it. -Justine Anne Gamboa', '2025-05-24 18:43:30'),
-(25, 4, 'Your life is your story, and the adventure ahead of you is the journey to fulfill your own purpose and potential. -Justin Waray', '2025-05-24 18:44:27'),
-(27, 2, 'Beyond the gown and cap lies a journey just begun. - Stephanie makmak', '2025-05-24 18:46:43'),
-(28, 3, 'From student to graduate, from dreamer to achiever. -Dharnie Santiago', '2025-05-24 18:47:16');
+INSERT INTO `batch` (`year`, `created`) VALUES
+(2020, '2020-06-01 10:00:00'),
+(2021, '2021-06-01 10:00:00'),
+(2022, '2022-06-01 10:00:00'),
+(2023, '2023-06-01 10:00:00'),
+(2024, '2024-06-01 10:00:00'),
+(2024, '2024-06-01 10:00:00');
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gallery`
+--
+
+CREATE TABLE `gallery` (
+  `id` INT(30) NOT NULL AUTO_INCREMENT,
+  `batch_id` INT(30) NOT NULL,
+  `event_name` VARCHAR(100) DEFAULT NULL,         -- e.g., Graduation, Field Trip
+  `title` VARCHAR(100) DEFAULT NULL,              -- Optional title of the image
+  `caption` TEXT DEFAULT NULL,                    -- Optional image caption
+  `contributor` VARCHAR(100) DEFAULT NULL,        -- Admin name or uploader
+  `image_path` VARCHAR(255) DEFAULT NULL,         -- Path/URL to the image
+  `image_blob` LONGBLOB DEFAULT NULL,             -- Optional binary data (for embedded storage)
+  `about` TEXT NOT NULL,                          -- Description or story
+  `created` DATETIME NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`batch_id`) REFERENCES `batch`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+INSERT INTO `gallery` 
+(`batch_id`, `event_name`, `title`, `caption`, `contributor`, `image_path`, `image_blob`, `about`, `created`) 
+VALUES
+(1, 'Graduation', 'Class of 2020', 'A proud moment.', 'admin1', '/images/graduation2020.jpg', NULL, 'Graduation ceremony for batch 2020', '2020-10-15 13:08:27'),
+(1, 'Field Trip', 'Nature Trip', 'Fun and learning in the wild.', 'admin2', '/images/fieldtrip2020.jpg', NULL, 'Students explored ecological parks and learned about biodiversity.', '2020-10-15 13:15:37'),
+(3, 'Sports Fest', 'Champions!', 'Our basketball team took the trophy!', 'admin3', '/images/sportsfest2020.jpg', NULL, 'An exciting day full of sports and camaraderie.', '2020-10-15 13:15:45'),
+(1, 'Prom Night', 'Glamour Night', 'Everyone looked stunning under the lights.', 'admin1', '/images/prom2020.jpg', NULL, 'The batch’s final party together before graduation.', '2020-10-15 13:15:53'),
+(1, 'Retreat', 'Reflections', 'Time for inner peace and bonding.', 'admin2', '/images/retreat2020.jpg', NULL, 'A meaningful retreat that brought us closer as a class.', '2020-10-15 13:16:07');
+
+
+-- CREATE TABLE `gallery` (
+--   `id` int(30) NOT NULL AUTO_INCREMENT,
+--   `batch_id` INT(30) NOT NULL,
+--   `about` text NOT NULL,
+--   `created` datetime NOT NULL DEFAULT current_timestamp(),
+--   PRIMARY KEY (`id`),
+--   FOREIGN KEY (`batch_id`) REFERENCES `batch`(`id`) ON DELETE CASCADE
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `gallery`
+--
+
+-- INSERT INTO `gallery` (`batch_id`, `about`, `created`) VALUES
+-- (1, 'Samplee', '2020-10-15 13:08:27'),
+-- (2, 'asdasd', '2020-10-15 13:15:37'),
+-- (3, 'asdasdrtgfdg', '2020-10-15 13:15:45'),
+-- (4, 'dfgdfgdfg', '2020-10-15 13:15:53'),
+-- (5, 'dfgdfgdfg', '2020-10-15 13:16:07');
 
 -- --------------------------------------------------------
 
@@ -251,14 +271,14 @@ CREATE TABLE `system_settings` (
   `contact` varchar(20) NOT NULL,
   `cover_img` text NOT NULL,
   `about_content` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `system_settings`
 --
 
 INSERT INTO `system_settings` (`id`, `name`, `email`, `contact`, `cover_img`, `about_content`) VALUES
-(1, 'MemoraBook', 'info@sample.comm', '+6948 8542 623', '1748080320_485157431_1055146023312797_2806802539263514845_n.jpg', '&lt;p style=&quot;text-align: center; background: transparent; position: relative;&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0); font-family: &amp;quot;Open Sans&amp;quot;, Arial, sans-serif; font-weight: 400; text-align: justify;&quot;&gt;&amp;nbsp;is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&rsquo;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center; background: transparent; position: relative;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center; background: transparent; position: relative;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;');
+(1, 'Alumni Management System', 'info@sample.comm', '+6948 8542 623', '1602738120_pngtree-purple-hd-business-banner-image_5493.jpg', '&lt;p style=&quot;text-align: center; background: transparent; position: relative;&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0); font-family: &amp;quot;Open Sans&amp;quot;, Arial, sans-serif; font-weight: 400; text-align: justify;&quot;&gt;&amp;nbsp;is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&rsquo;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center; background: transparent; position: relative;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center; background: transparent; position: relative;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;');
 
 -- --------------------------------------------------------
 
@@ -274,20 +294,15 @@ CREATE TABLE `users` (
   `type` tinyint(1) NOT NULL DEFAULT 3 COMMENT '1=Admin,2=Alumni officer, 3= alumnus',
   `auto_generated_pass` text NOT NULL,
   `alumnus_id` int(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `name`, `username`, `password`, `type`, `auto_generated_pass`, `alumnus_id`) VALUES
-(3, 'Mike Williams', 'mwilliams@sample.com', '3cc93e9a6741d8b40460457139cf8ced', 3, '', 2),
-(21, 'Anton Macatangay', 'antonmacatangay@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', 3, '', 9),
-(22, 'Justin Mark Padilla', 'justinpadilla@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', 3, '', 10),
-(23, 'Andrei Cruz', 'andreicruz@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', 3, '', 11),
-(24, 'Stephen Ivan Santiago', 'stephenivan@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', 3, '', 12),
-(25, 'Dharrell Montion', 'dharrel@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', 3, '', 13),
-(26, 'Ryan Fadrigalan', 'ryanfadrigalan@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', 3, '', 14);
+(1, 'Admin', 'admin', '0192023a7bbd73250516f069df18b500', 1, '', 0),
+(3, 'Mike Williams', 'mwilliams@sample.com', '3cc93e9a6741d8b40460457139cf8ced', 3, '', 2);
 
 --
 -- Indexes for dumped tables
@@ -297,13 +312,6 @@ INSERT INTO `users` (`id`, `name`, `username`, `password`, `type`, `auto_generat
 -- Indexes for table `alumnus_bio`
 --
 ALTER TABLE `alumnus_bio`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `batch_id` (`batch_id`);
-
---
--- Indexes for table `batch`
---
-ALTER TABLE `batch`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -346,8 +354,7 @@ ALTER TABLE `forum_topics`
 -- Indexes for table `gallery`
 --
 ALTER TABLE `gallery`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `batch_id` (`batch_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `system_settings`
@@ -369,7 +376,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `alumnus_bio`
 --
 ALTER TABLE `alumnus_bio`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `careers`
@@ -381,19 +388,19 @@ ALTER TABLE `careers`
 -- AUTO_INCREMENT for table `courses`
 --
 ALTER TABLE `courses`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `event_commits`
 --
 ALTER TABLE `event_commits`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `forum_comments`
@@ -411,7 +418,7 @@ ALTER TABLE `forum_topics`
 -- AUTO_INCREMENT for table `gallery`
 --
 ALTER TABLE `gallery`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `system_settings`
@@ -419,36 +426,15 @@ ALTER TABLE `gallery`
 ALTER TABLE `system_settings`
   MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
+ALTER TABLE `alumnus_bio`
+  CHANGE `batch` `batch_id` INT(30) NOT NULL,
+  ADD FOREIGN KEY (`batch_id`) REFERENCES `batch`(`id`) ON DELETE CASCADE;
+
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `alumnus_bio`
---
-ALTER TABLE `alumnus_bio`
-  ADD CONSTRAINT `alumnus_bio_ibfk_1` FOREIGN KEY (`batch_id`) REFERENCES `batch` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `gallery`
---
-ALTER TABLE `gallery`
-  ADD CONSTRAINT `gallery_ibfk_1` FOREIGN KEY (`batch_id`) REFERENCES `batch` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `gallery`
-  MODIFY `id` INT(30) NOT NULL AUTO_INCREMENT,
-  ADD `event_name` VARCHAR(100) DEFAULT NULL,
-  ADD `title` VARCHAR(100) DEFAULT NULL,
-  ADD `caption` TEXT DEFAULT NULL,
-  ADD `contributor` VARCHAR(100) DEFAULT NULL,
-  ADD `image_path` VARCHAR(255) DEFAULT NULL,
-  ADD `image_blob` LONGBLOB DEFAULT NULL;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
