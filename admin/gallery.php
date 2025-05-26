@@ -1,4 +1,4 @@
-<?php include('db_connect.php');?>
+	<?php include('db_connect.php');?>
 
 <div class="container-fluid">
 	
@@ -248,13 +248,44 @@
 						location.reload()
 					},1500)
 
-				}
-				else if(resp==2){
-					alert_toast("Data successfully updated",'success')
-					setTimeout(function(){
-						location.reload()
-					},1500)
+					}
+					else if(resp==2){
+						alert_toast("Data successfully updated",'success')
+						setTimeout(function(){
+							location.reload()
+						},1500)
 
+					}
+				}
+			})
+		})
+		$('.edit_gallery').click(function(){
+			start_load()
+			var cat = $('#manage-gallery')
+			cat.get(0).reset()
+			cat.find("[name='id']").val($(this).attr('data-id'))
+			cat.find("[name='about']").val($(this).attr('data-about'))
+			// ✅ Fix: Convert data-batch_year into expected batch_id value
+			var batch_id = $(this).attr('data-batch_year')  // which actually holds the batch_id
+			cat.find("[name='batch_id']").val(batch_id)
+			cat.find("img").attr('src',$(this).attr('data-src'))
+			end_load()
+		})
+		$('.delete_gallery').click(function(){
+			_conf("Are you sure to delete this data?","delete_gallery",[$(this).attr('data-id')])
+		})
+		function delete_gallery($id){
+			start_load()
+			$.ajax({
+				url:'ajax.php?action=delete_gallery',
+				method:'POST',
+				data:{id:$id},
+				success:function(resp){
+					if(resp==1){
+						alert_toast("Data successfully deleted",'success')
+						setTimeout(function(){
+							location.reload()
+						},1500)
 				}
 			}
 		})
