@@ -170,7 +170,7 @@ body {
 .detail-label {
   font-weight: 600;
   color: #555;
-  width: 100px;
+  width: 60px;
   display: inline-block;
 }
 
@@ -341,10 +341,10 @@ span.hightlight{
                                     <span class="detail-label">Batch:</span>
                                     <span class="filter-txt"><?php echo $row['year'] ?></span>
                                 </li>
-                                <li>
+                                <!-- <li>
                                     <span class="detail-label">Working as:</span>
                                     <span class="filter-txt"><?php echo $row['connected_to'] ?></span>
-                                </li>
+                                </li> -->
                             </ul>
                         </div>
                     </div>
