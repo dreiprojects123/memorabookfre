@@ -52,7 +52,52 @@ header.masthead {
 }
 
 .card.gallery-list:hover {
-  transform: translateY(-0.5px);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+}
+
+.card.batch-card {
+  background-color: #fff;
+  border: none;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  margin-bottom: 2rem;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.card.batch-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+}
+
+.batch-year {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  transition: color 0.3s ease;
+}
+
+.card.batch-card:hover .batch-year {
+  color: white;
+}
+
+.batch-count {
+  font-size: 1rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+.card.batch-card:hover .batch-count {
+  color: rgba(255,255,255,0.9);
 }
 
 .gallery-img img {
@@ -86,10 +131,42 @@ header.masthead {
   border-color: var(--secondary-color);
 }
 
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
 .input-group-text {
   background-color: var(--primary-color);
   color: white;
   border: none;
+}
+
+.breadcrumb {
+  background-color: transparent;
+  padding: 0;
+  margin-bottom: 2rem;
+}
+
+.breadcrumb-item a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+  color: #6c757d;
+}
+
+#batch-selection {
+  display: block;
+}
+
+#gallery-view {
+  display: none;
 }
 </style>
 
@@ -100,85 +177,164 @@ header.masthead {
   </div>
 </header>
 
-<div class="container search-container">
-  <div class="row">
-    <div class="col-md-9">
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="filter-field"><i class="fa fa-search"></i></span>
-        </div>
-        <input type="text" class="form-control" id="filter" placeholder="Search by Name, Memories or date" aria-label="Filter" aria-describedby="filter-field">
+<!-- Batch Selection View -->
+<div id="batch-selection">
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-12">
+        <h4 class="text-center mb-4">Select a Batch Year to View Gallery</h4>
       </div>
     </div>
-    <div class="col-md-3">
-      <button class="btn btn-primary btn-block" id="search">Search</button>
+    <div class="row">
+      <?php
+      // Get all batches with gallery count
+      $batch_query = $conn->query("
+        SELECT b.id, b.year, COUNT(g.id) as gallery_count 
+        FROM batch b 
+        LEFT JOIN gallery g ON b.id = g.batch_id 
+        GROUP BY b.id, b.year 
+        HAVING gallery_count > 0
+        ORDER BY b.year DESC
+      ");
+      
+      while($batch_row = $batch_query->fetch_assoc()):
+      ?>
+      <div class="col-md-4 col-lg-3">
+        <div class="card batch-card" data-batch-id="<?php echo $batch_row['id'] ?>" data-batch-year="<?php echo $batch_row['year'] ?>">
+          <div class="card-body">
+            <div class="batch-year">Batch <?php echo $batch_row['year'] ?></div>
+            <div class="batch-count"><?php echo $batch_row['gallery_count'] ?> Photo<?php echo $batch_row['gallery_count'] > 1 ? 's' : '' ?></div>
+          </div>
+        </div>
+      </div>
+      <?php endwhile; ?>
     </div>
   </div>
 </div>
 
-<div class="container mt-5">
-  <div class="row">
-    <?php
-    $ci = 0;
-    $img = array();
-    $fpath = 'admin/assets/uploads/gallery';
-    $files = is_dir($fpath) ? scandir($fpath) : array();
-    foreach($files as $val){
-        if(!in_array($val, array('.', '..'))){
-            $n = explode('_', $val);
-            $img[$n[0]] = $val;
-        }
-    }
-    $gallery = $conn->query("SELECT * from gallery order by id desc");
-    while($row = $gallery->fetch_assoc()):
-    ?>
-    <div class="col-md-4">
-      <div class="card gallery-list" data-id="<?php echo $row['id'] ?>">
-        <div class="gallery-img">
-          <img src="<?php echo isset($img[$row['id']]) && is_file($fpath.'/'.$img[$row['id']]) ? $fpath.'/'.$img[$row['id']] : '' ?>" alt="Graduation Photo">
+<!-- Gallery View (Initially Hidden) -->
+<div id="gallery-view">
+  <div class="container search-container">
+    <div class="row">
+      <div class="col-12 mb-3">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#" id="back-to-batches">Gallery</a></li>
+            <li class="breadcrumb-item active" aria-current="page" id="current-batch">Batch Year</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-9">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="filter-field"><i class="fa fa-search"></i></span>
+          </div>
+          <input type="text" class="form-control" id="filter" placeholder="Search by Name, Memories or description" aria-label="Filter" aria-describedby="filter-field">
         </div>
-        <div class="card-body">
-          <span class="truncate" data-about="<?php echo strtolower($row['about']) ?>"><small><?php echo ucwords($row['about']) ?></small></span>
+      </div>
+      <div class="col-md-3">
+        <button class="btn btn-primary btn-block" id="search">Search</button>
+      </div>
+    </div>
+  </div>
 
+  <div class="container mt-5">
+    <div class="row" id="gallery-container">
+      <!-- Gallery images will be loaded here dynamically -->
+    </div>
+    
+    <!-- No results message -->
+    <div class="row" id="no-results" style="display: none;">
+      <div class="col-12 text-center">
+        <div class="alert alert-info">
+          <h5>No photos found</h5>
+          <p>There are no photos available for the selected batch or search criteria.</p>
         </div>
       </div>
     </div>
-    <?php endwhile; ?>
   </div>
 </div>
 
 <script>
-  $('.gallery-img img').click(function() {
-    viewer_modal($(this).attr('src'));
-  });
+// Handle batch selection
+$(document).on('click', '.batch-card', function() {
+  var batchId = $(this).data('batch-id');
+  var batchYear = $(this).data('batch-year');
+  
+  // Update breadcrumb
+  $('#current-batch').text('Batch ' + batchYear);
+  
+  // Hide batch selection and show gallery view
+  $('#batch-selection').hide();
+  $('#gallery-view').show();
+  
+  // Load gallery for selected batch
+  loadGallery(batchId, batchYear);
+});
 
-  $('.book-gallery').click(function() {
-    uni_modal("Submit Booking Request", "booking.php?gallery_id=" + $(this).attr('data-id'));
-  });
+// Handle back to batches
+$(document).on('click', '#back-to-batches', function(e) {
+  e.preventDefault();
+  $('#gallery-view').hide();
+  $('#batch-selection').show();
+  $('#filter').val(''); // Clear search
+});
 
-  $('.gallery-img img').click(function() {
-    viewer_modal($(this).attr('src'));
-  });
-
-  // Booking
-  $('.book-gallery').click(function() {
-    uni_modal("Submit Booking Request", "booking.php?gallery_id=" + $(this).attr('data-id'));
-  });
-
-  // Search filter function
-  function filterGallery() {
-    let query = $('#filter').val().toLowerCase();
-    $('.card.gallery-list').each(function() {
-      let aboutText = $(this).find('.truncate').data('about').toLowerCase();
-      if (aboutText.includes(query)) {
-        $(this).parent().show();
+// Function to load gallery for specific batch
+function loadGallery(batchId, batchYear) {
+  $.ajax({
+    url: 'load_batch_gallery.php',
+    method: 'POST',
+    data: { batch_id: batchId },
+    success: function(response) {
+      $('#gallery-container').html(response);
+      
+      // Check if any results were returned
+      if ($('#gallery-container .gallery-list').length === 0) {
+        $('#no-results').show();
       } else {
-        $(this).parent().hide();
+        $('#no-results').hide();
       }
-    });
-  }
+    },
+    error: function() {
+      $('#gallery-container').html('<div class="col-12"><div class="alert alert-danger">Error loading gallery. Please try again.</div></div>');
+    }
+  });
+}
 
-  // Trigger search on input change or button click
-  $('#filter').on('input', filterGallery);
-  $('#search').on('click', filterGallery);
+// Image click handler (will be applied to dynamically loaded content)
+$(document).on('click', '.gallery-img img', function() {
+  viewer_modal($(this).attr('src'));
+});
+
+// Search filter function
+function filterGallery() {
+  let query = $('#filter').val().toLowerCase();
+  $('.card.gallery-list').each(function() {
+    let aboutText = $(this).find('.truncate').data('about') ? $(this).find('.truncate').data('about').toLowerCase() : '';
+    let eventText = $(this).find('.event-name').text() ? $(this).find('.event-name').text().toLowerCase() : '';
+    let titleText = $(this).find('.image-title').text() ? $(this).find('.image-title').text().toLowerCase() : '';
+    let captionText = $(this).find('.image-caption').text() ? $(this).find('.image-caption').text().toLowerCase() : '';
+    
+    if (aboutText.includes(query) || eventText.includes(query) || titleText.includes(query) || captionText.includes(query)) {
+      $(this).parent().show();
+    } else {
+      $(this).parent().hide();
+    }
+  });
+  
+  // Check if any results are visible after filtering
+  let visibleResults = $('.card.gallery-list:visible').length;
+  if (visibleResults === 0 && query !== '') {
+    $('#no-results').show();
+  } else {
+    $('#no-results').hide();
+  }
+}
+
+// Trigger search on input change or button click
+$('#filter').on('input', filterGallery);
+$('#search').on('click', filterGallery);
 </script>
