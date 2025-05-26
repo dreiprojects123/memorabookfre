@@ -121,9 +121,9 @@ Class Action {
 		$chk = $this->db->query("SELECT * FROM users where username = '$email' ")->num_rows;
 		if($chk > 0){
 			return 2;
-			exit;
 		}
-			$save = $this->db->query("INSERT INTO users set ".$data);
+		
+		$save = $this->db->query("INSERT INTO users set ".$data);
 		if($save){
 			$uid = $this->db->insert_id;
 			$data = '';
@@ -151,6 +151,7 @@ Class Action {
 			}
 		}
 	}
+	
 	function update_account(){
 		extract($_POST);
 		$data = " name = '".$firstname.' '.$lastname."' ";
@@ -223,6 +224,24 @@ Class Action {
 	}
 
 	
+	function save_batch(){
+		extract($_POST);
+		$data = " batch = '$year' ";
+			if(empty($id)){
+				$save = $this->db->query("INSERT INTO batch set $data");
+			}else{
+				$save = $this->db->query("UPDATE batch set $data where id = $id");
+			}
+		if($save)
+			return 1;
+	}
+	function delete_batch(){
+		extract($_POST);
+		$delete = $this->db->query("DELETE FROM batch where id = ".$id);
+		if($delete){
+			return 1;
+		}
+	}
 	function save_course(){
 		extract($_POST);
 		$data = " course = '$course' ";
@@ -259,7 +278,7 @@ Class Action {
 			}
 		}
 		if(empty($id)){
-			$save = $this->db->query("INSERT INTO gallery set about = '$about' ");
+			$save = $this->db->query("INSERT INTO gallery set about = '$about', batch_id = '$batch_id' ");
 			if($save){
 				$id = $this->db->insert_id;
 				$folder = "assets/uploads/gallery/";

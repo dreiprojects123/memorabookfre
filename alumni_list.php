@@ -301,8 +301,23 @@ span.hightlight{
             <div class="row">
                 <?php
                 $fpath = 'admin/assets/uploads';
-                $alumni = $conn->query("SELECT a.*,c.course,Concat(a.lastname,', ',a.firstname,' ',a.middlename) as name from alumnus_bio a inner join courses c on c.id = a.course_id order by Concat(a.lastname,', ',a.firstname,' ',a.middlename) asc");
-                while($row = $alumni->fetch_assoc()):
+                // $alumni = $conn->query("SELECT a.*,c.course,Concat(a.lastname,', ',a.firstname,' ',a.middlename) as name from alumnus_bio a inner join courses c on c.id = a.course_id order by Concat(a.lastname,', ',a.firstname,' ',a.middlename) asc");
+                // while($row = $alumni->fetch_assoc()):
+                $alumni = $conn->query("SELECT 
+                          a.*, 
+                          c.course, 
+                          b.year,
+                          CONCAT(a.lastname, ', ', a.firstname, ' ', a.middlename) as name 
+                      FROM 
+                          alumnus_bio a 
+                      INNER JOIN 
+                          courses c ON c.id = a.course_id 
+                      LEFT JOIN 
+                          batch b ON b.id = a.batch_id
+                      ORDER BY 
+                          CONCAT(a.lastname, ', ', a.firstname, ' ', a.middlename) ASC");
+
+                      while($row = $alumni->fetch_assoc()):
                 ?>
                 <div class="col-md-4 item">
                     <div class="card alumni-list" data-id="<?php echo $row['id'] ?>">
@@ -324,7 +339,7 @@ span.hightlight{
                                 </li>
                                 <li>
                                     <span class="detail-label">Batch:</span>
-                                    <span class="filter-txt"><?php echo $row['batch'] ?></span>
+                                    <span class="filter-txt"><?php echo $row['year'] ?></span>
                                 </li>
                                 <li>
                                     <span class="detail-label">Working as:</span>
