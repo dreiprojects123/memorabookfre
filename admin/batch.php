@@ -4,30 +4,43 @@
 	
 	<div class="col-lg-12">
 		<div class="row">
+		
 			<!-- FORM Panel -->
 			<div class="col-md-4">
-			<form action="" id="manage-batch">
+			<form action="" id="manage-batch" enctype="multipart/form-data">
 				<div class="card">
-					<div class="card-header">
-						    <b>Add/Create Batch</b>
-				  	</div>
-					<div class="card-body">
-							<input type="hidden" name="id">
-							<div class="form-group">
-								<label class="control-label">Batch:</label>
-								<input type="text" class="form-control datepicker" name="batch" placeholder="Select Year">
-							</div>
-							
-					</div> 
-							
-					<div class="card-footer">
-						<div class="row">
-							<div class="col-md-12">
-								<button class="btn btn-sm btn-primary col-sm-3 offset-md-3"> Save</button>
-								<button class="btn btn-sm btn-default col-sm-3" type="button" onclick="$('#manage-course').get(0).reset()"> Cancel</button>
-							</div>
-						</div>
+				<div class="card-header">
+					<b>Add/Create Batch</b>
+				</div>
+				<div class="card-body">
+					<input type="hidden" name="id">
+
+					<!-- Year Input -->
+					<div class="form-group">
+					<label class="control-label">Batch Year:</label>
+					<input type="text" class="form-control datepicker" name="batch" placeholder="Select Year">
 					</div>
+
+					<!-- Image Upload Input -->
+					<div class="form-group">
+					<label class="control-label">Batch Cover Image:</label>
+					<input type="file" class="form-control" name="img" accept="image/*" onchange="displayImg(this, $(this))">
+					</div>
+
+					<!-- Preview -->
+					<div class="form-group text-center">
+					<img id="cimg" src="#" alt="Preview" class="img-fluid img-thumbnail" style="max-height: 200px; display: none;">
+					</div>
+				</div>
+
+				<div class="card-footer">
+					<div class="row">
+					<div class="col-md-12 text-center">
+						<button class="btn btn-sm btn-primary col-sm-4">Save</button>
+						<button class="btn btn-sm btn-secondary col-sm-4" type="button" onclick="$('#manage-batch').get(0).reset()">Cancel</button>
+					</div>
+					</div>
+				</div>
 				</div>
 			</form>
 			</div>
@@ -91,6 +104,15 @@
 	}
 </style>
 <script>
+	function displayImg(input, _this) {
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+			reader.onload = function (e) {
+			$('#cimg').attr('src', e.target.result).show();
+			}
+			reader.readAsDataURL(input.files[0]);
+		}
+	}
     $('.datepicker').datepicker({
         format: " yyyy", 
         viewMode: "years", 
