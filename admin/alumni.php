@@ -69,8 +69,19 @@
 
 									</td>
 									<td class="text-center">
-										<button class="btn btn-sm btn-outline-primary view_alumni" type="button" data-id="<?php echo $row['id'] ?>" >View</button>
-										<button class="btn btn-sm btn-outline-danger delete_alumni" type="button" data-id="<?php echo $row['id'] ?>">Delete</button>
+										<button 
+											class="btn btn-sm btn-outline-primary view_alumni" 
+											type="button" 
+											data-id="<?php echo htmlspecialchars($row['id']); ?>">
+											<i class="fas fa-eye"></i>
+										</button>
+
+										<button 
+											class="btn btn-sm btn-outline-danger delete_alumni" 
+											type="button" 
+											data-id="<?php echo htmlspecialchars($row['id']); ?>">
+											<i class="fas fa-trash-alt"></i>
+										</button>
 									</td>
 								</tr>
 								<?php endwhile; ?>

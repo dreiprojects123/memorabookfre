@@ -59,6 +59,18 @@ if($action == "delete_course"){
 	if($delete)
 		echo $delete;
 }
+
+if($action == "save_course"){
+	$save = $crud->save_batch();
+	if($save)
+		echo $save;
+}
+if($action == "delete_course"){
+	$delete = $crud->delete_batch();
+	if($delete)
+		echo $delete;
+}
+
 if($action == "update_alumni_acc"){
 	$save = $crud->update_alumni_acc();
 	if($save)

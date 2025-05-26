@@ -59,8 +59,19 @@ include 'admin/db_connect.php';
                                                 </select>
                                             </div>
                                             <div class="col-md-4">
-                                                <label for="" class="control-label">Batch</label>
-                                                <input type="input" class="form-control datepickerY" name="batch" required>
+                                                <label class="control-label">Batch</label>
+                                                <select class="form-control" name="batch_id" required>
+                                                    <option value="" disabled selected>Select batch</option>
+                                                    <?php
+                                                    // Assuming you're using PHP and already connected to your database
+                                                    $batch = $conn->query("SELECT id, year FROM batch ORDER BY year DESC");
+                                                    while ($row = $batch->fetch_assoc()):
+                                                    ?>
+                                                    <option value="<?php echo $row['id']; ?>">
+                                                        Batch <?php echo $row['year']; ?>
+                                                    </option>
+                                                    <?php endwhile; ?>
+                                                </select>    
                                             </div>
                                             <div class="col-md-4">
                                                 <label for="" class="control-label">Course Graduated</label>
