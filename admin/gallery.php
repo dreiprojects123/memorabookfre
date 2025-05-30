@@ -26,8 +26,19 @@
 
 					<!-- Event Name -->
 					<div class="form-group">
-					<label class="control-label">Event Name</label>
-					<input type="text" class="form-control" name="event_name" placeholder="e.g., Graduation, Field Trip">
+						<label class="control-label">Event Name</label>
+						<select class="form-control" name="event_name">
+							<option disabled selected>Select an event</option>
+							<option value="Field Trip">Field Trip</option>
+							<option value="Retreat">Retreat</option>
+							<option value="Educational Tour">Educational Tour</option>
+							<option value="Graduation">Graduation</option>
+							<option value="Recognition">Recognition</option>
+							<option value="Intrams">Intrams</option>
+							<option value="Foundation Week">Foundation Week</option>
+							<option value="Graduation Ball">Graduation Ball</option>
+							<option value="Others">Others</option>
+						</select>
 					</div>
 
 					<!-- Image Title -->
@@ -260,36 +271,36 @@
 		})
 	})
 	$(document).on('click', '.edit_gallery', function() {
-    // Get data attributes from button
-    var id = $(this).data('id');
-    var about = $(this).data('about');
-    var batch_id = $(this).data('batch_id');  // Note: your data attribute is 'data-batch_year'
-    var src = $(this).data('src');
-    var event_name = $(this).data('event_name') || '';
-    var title = $(this).data('title') || '';
-    var caption = $(this).data('caption') || '';
-    var contributor = $(this).data('contributor') || '';
+		// Get data attributes from button
+		var id = $(this).data('id');
+		var about = $(this).data('about');
+		var batch_id = $(this).data('batch_id');  // Note: your data attribute is 'data-batch_year'
+		var src = $(this).data('src');
+		var event_name = $(this).data('event_name') || '';
+		var title = $(this).data('title') || '';
+		var caption = $(this).data('caption') || '';
+		var contributor = $(this).data('contributor') || '';
 
-    // Show the upload form panel if hidden
-    $('#uploadFormPanel').show();
-    $('#toggleUploadForm').html('<i class="fas fa-times"></i> Cancel Upload').removeClass('btn-success').addClass('btn-secondary');
+		// Show the upload form panel if hidden
+		$('#uploadFormPanel').show();
+		$('#toggleUploadForm').html('<i class="fas fa-times"></i> Cancel Upload').removeClass('btn-success').addClass('btn-secondary');
 
-    // Populate the form fields with existing data
-    $('#manage-gallery [name="id"]').val(id);
-    $('#manage-gallery [name="about"]').val(about);
-    $('#manage-gallery [name="batch_id"]').val(batch_id);
-    $('#manage-gallery [name="event_name"]').val(event_name);
-    $('#manage-gallery [name="title"]').val(title);
-    $('#manage-gallery [name="caption"]').val(caption);
-    $('#manage-gallery [name="contributor"]').val(contributor);
+		// Populate the form fields with existing data
+		$('#manage-gallery [name="id"]').val(id);
+		$('#manage-gallery [name="about"]').val(about);
+		$('#manage-gallery [name="batch_id"]').val(batch_id);
+		$('#manage-gallery [name="event_name"]').val(event_name);
+		$('#manage-gallery [name="title"]').val(title);
+		$('#manage-gallery [name="caption"]').val(caption);
+		$('#manage-gallery [name="contributor"]').val(contributor);
 
-    // Show current image preview if available
-    if(src) {
-        $('#cimg').attr('src', src).show();
-    } else {
-        $('#cimg').hide();
-    }
-});
+		// Show current image preview if available
+		if(src) {
+			$('#cimg').attr('src', src).show();
+		} else {
+			$('#cimg').hide();
+		}
+	});
 
 	$('.delete_gallery').click(function(){
 		_conf("Are you sure to delete this data?","delete_gallery",[$(this).attr('data-id')])
