@@ -99,11 +99,11 @@ if (isset($_POST['batch_id'])) {
     // Now render each course with class picture and portraits
     echo '<section class="grad-combined-section py-5" style="background-color: #f9f9f9;">';
     echo '<div class="container">';
-    echo '<h2 class="text-center text-success mb-5">🎓 Graduation by Course</h2>';
+    echo '<h2 class="text-center text-success mb-5">🎓Graduates</h2>';
 
     foreach ($combinedByCourse as $course => $data):
         echo '<div class="mb-5">';
-        echo '<h3 class="text-center text-primary mb-4">📘 ' . htmlspecialchars($course) . '</h3>';
+        echo '<h3 class="text-center text-black mb-4">📘 ' . htmlspecialchars($course) . '</h3>';
 
         // Class Picture (full-width card)
         if (!empty($data['class_picture'])):
