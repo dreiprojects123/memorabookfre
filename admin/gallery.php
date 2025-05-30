@@ -33,6 +33,7 @@
 							<option value="Retreat">Retreat</option>
 							<option value="Educational Tour">Educational Tour</option>
 							<option value="Graduation">Graduation</option>
+							<option value="Graduation Class Picture">Graduation Class Picture</option>
 							<option value="Recognition">Recognition</option>
 							<option value="Intrams">Intrams</option>
 							<option value="Foundation Week">Foundation Week</option>
