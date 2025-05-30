@@ -231,46 +231,6 @@ if (isset($_POST['batch_id'])) {
         echo '</div>';
     }
 
-    // Graduation Class Picture section above Graduation Portraits
-    if (isset($grouped['Graduation Class Picture'])):
-        echo '<div class="yearbook-section graduation-class-picture-section" data-event="graduation-class-picture">';
-        echo '<div class="section-header">';
-        echo '<h3 class="text-secondary mb-2">🎓 Class of '.$grouped['Graduation Class Picture'][0]['batch_year'].' – Class Picture</h3>';
-        if (!empty($grouped['Graduation Class Picture'][0]['contributor'])) {
-            echo '<div class="contributor-info"><i class="fas fa-graduation-cap"></i> Contributed by ' . htmlspecialchars($grouped['Graduation Class Picture'][0]['contributor']) . '</div>';
-        }
-        echo '</div>';
-        echo '<div class="row">';
-
-        foreach ($grouped['Graduation Class Picture'] as $row): ?>
-            <div class="col-12 mb-4">
-                <div class="card shadow-sm">
-                    <div class="img-container text-center p-3">
-                        <img src="<?php echo isset($img[$row['id']]) ? $fpath.'/'.$img[$row['id']] : 'assets/images/no-image.png'; ?>" 
-                            class="img-fluid rounded" 
-                            style="max-height: 500px; object-fit: contain;" 
-                            alt="Graduation Class Picture">
-                    </div>
-                    <div class="card-body-centered">
-                        <h5 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h5>
-                        <?php if (!empty($row['caption'])): ?>
-                            <p class="card-caption"><?php echo htmlspecialchars($row['caption']); ?></p>
-                        <?php endif; ?>
-                        <?php if (!empty($row['contributor'])): ?>
-                            <div class="contributor-info justify-content-center">
-                                <i class="fas fa-user"></i> 
-                                <?php echo htmlspecialchars($row['contributor']); ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
-        <?php endforeach;
-
-        echo '</div></div>';
-        unset($grouped['Graduation Class Picture']);
-    endif;
-
     // Graduation Class Picture section - Full Section View grouped by course
     // Combine and group both Graduation Class Picture and Graduation by course
     $combinedByCourse = [];
@@ -296,7 +256,7 @@ if (isset($_POST['batch_id'])) {
     // Now render each course with class picture and portraits
     echo '<section class="grad-combined-section py-5" style="background-color: #f9f9f9;">';
     echo '<div class="container">';
-    echo '<h2 class="text-center text-success mb-5">🎓Graduates</h2>';
+    echo '<h2 class="text-center text-success mb-5">🎓Graduates of ' . htmlspecialchars($batch_year) . '</h2>';
 
     foreach ($combinedByCourse as $course => $data):
         echo '<div class="mb-5">';
