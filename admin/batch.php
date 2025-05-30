@@ -181,7 +181,7 @@
 	function delete_batch($id){
 		start_load()
 		$.ajax({
-			url:'ajax.php?action=delete_course',
+			url:'ajax.php?action=delete_batch',
 			method:'POST',
 			data:{id:$id},
 			success:function(resp){
