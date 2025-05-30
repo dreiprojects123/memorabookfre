@@ -1,29 +1,182 @@
 <style>
-.yearbook-section { margin-bottom: 40px; }
-.graduation-section .card { border: 2px solid #2980b9; }
-.event-field-trip .card { border-left: 4px solid #27ae60; }
-.event-retreat .card { border-left: 4px solid #8e44ad; }
-/* Add more styling per event if desired */
+    .yearbook-section { 
+        margin-bottom: 40px; 
+    }
+    
+    .graduation-section .card { 
+        border: 2px solid #2980b9; 
+    }
+    
+    /* .event-field-trip .card { 
+        border-left: 4px solid #27ae60; 
+    }
+    
+    .event-retreat .card { 
+        border-left: 4px solid #8e44ad; 
+    } */
 
-.fixed-img {
-    height: 100%;
-    width: auto;
-    object-fit: cover;
-}
-.img-container {
-    width: 100%;
-    height: 300px; /* You can increase/decrease as needed */
-    overflow: hidden;
-}
+    .fixed-img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+    
+    .img-container {
+        width: 100%;
+        height: 300px;
+        overflow: hidden;
+    }
 
-.full-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+    .full-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
+    .timeline-item {
+        min-height: 200px; /* Reduced from 300px */
+    }
+
+    .graduation-class-picture-section .card {
+        border: none;
+        background-color: #f8f9fa;
+        padding: 1rem;
+    }
+
+    .graduation-class-picture-section .img-container {
+        width: 100%;
+        text-align: center;
+        height: auto;
+    }
+
+    .graduation-class-picture-section img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        border-radius: 0.5rem;
+        max-height: 80vh;
+    }
+
+    /* Consistent image sizing for all layouts */
+    .consistent-img-container {
+        width: 100%;
+        height: 250px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+    }
+
+    .consistent-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Timeline specific image containers - MADE SMALLER */
+    .timeline-img-container {
+        width: 100%;
+        height: 200px; /* Reduced from 300px */
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Horizontal layout image containers - MADE SMALLER */
+    .horizontal-img-container {
+        width: 100%;
+        height: 200px; /* Reduced from 280px */
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Compact card styling for Educational Tour and Field Trip */
+    .compact-card {
+        margin-bottom: 1.5rem !important; /* Reduced spacing */
+    }
+
+    .compact-card .card-body {
+        padding: 1rem !important; /* Reduced padding */
+    }
+
+    .compact-card .card-title {
+        font-size: 1rem !important; /* Slightly smaller title */
+        margin-bottom: 0.3rem !important;
+    }
+
+    .compact-card .card-caption {
+        font-size: 0.875rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    /* Additional fixes for better positioning */
+    .section-header {
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .contributor-info {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .card-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+        text-align: center;
+    }
+
+    .card-caption {
+        color: #6c757d;
+        margin-bottom: 0.75rem;
+        line-height: 1.4;
+        text-align: center;
+    }
+
+    .card-body-centered {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .filter-container {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+        margin-right: 2rem;
+    }
+
+    .filter-container label {
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .section-divider {
+        border: 0;
+        height: 2px;
+        background: linear-gradient(to right, transparent, #dee2e6, transparent);
+        margin: 2rem 0;
+    }
+
+    /* Hide empty states */
+    .no-photos-message {
+        display: none !important;
+    }
 </style>
-
 
 <?php
 include 'admin/db_connect.php';
@@ -52,7 +205,8 @@ if (isset($_POST['batch_id'])) {
     ");
 
     if ($result->num_rows === 0) {
-        echo '<div class="alert alert-warning text-center">No gallery photos found for this batch.</div>';
+        // Instead of showing "no photos found", show a more user-friendly message or hide it
+        echo '<div class="alert alert-info text-center" style="display: none;">Loading gallery content...</div>';
         return;
     }
 
@@ -63,32 +217,84 @@ if (isset($_POST['batch_id'])) {
         $grouped[$event][] = $row;
     }
 
-    // Filter dropdown
-    echo '<div class="mb-3">';
-    echo '<label><strong>Filter Events:</strong></label>';
-    echo '<select id="eventFilter" class="form-control" style="width: auto; display: inline-block;">';
-    echo '<option value="all">All</option>';
-    foreach(array_keys($grouped) as $event){
-        echo '<option value="'.htmlspecialchars(strtolower($event)).'">'.htmlspecialchars($event).'</option>';
+    // Only show filter if there are actually photos
+    if (!empty($grouped)) {
+        // Filter dropdown
+        echo '<div class="filter-container">';
+        echo '<label for="eventFilter"><strong>Filter Events:</strong></label>';
+        echo '<select id="eventFilter" class="form-control">';
+        echo '<option value="all">All Events</option>';
+        foreach(array_keys($grouped) as $event){
+            echo '<option value="'.htmlspecialchars(strtolower($event)).'">'.htmlspecialchars($event).'</option>';
+        }
+        echo '</select>';
+        echo '</div>';
     }
-    echo '</select>';
-    echo '</div>';
+
+    // Graduation Class Picture section above Graduation Portraits
+    if (isset($grouped['Graduation Class Picture'])):
+        echo '<div class="yearbook-section graduation-class-picture-section" data-event="graduation-class-picture">';
+        echo '<div class="section-header">';
+        echo '<h3 class="text-secondary mb-2">🎓 Class of '.$grouped['Graduation Class Picture'][0]['batch_year'].' – Class Picture</h3>';
+        if (!empty($grouped['Graduation Class Picture'][0]['contributor'])) {
+            echo '<div class="contributor-info"><i class="fas fa-graduation-cap"></i> Contributed by ' . htmlspecialchars($grouped['Graduation Class Picture'][0]['contributor']) . '</div>';
+        }
+        echo '</div>';
+        echo '<div class="row">';
+
+        foreach ($grouped['Graduation Class Picture'] as $row): ?>
+            <div class="col-12 mb-4">
+                <div class="card shadow-sm">
+                    <div class="img-container text-center p-3">
+                        <img src="<?php echo isset($img[$row['id']]) ? $fpath.'/'.$img[$row['id']] : 'assets/images/no-image.png'; ?>" 
+                            class="img-fluid rounded" 
+                            style="max-height: 500px; object-fit: contain;" 
+                            alt="Graduation Class Picture">
+                    </div>
+                    <div class="card-body-centered">
+                        <h5 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h5>
+                        <?php if (!empty($row['caption'])): ?>
+                            <p class="card-caption"><?php echo htmlspecialchars($row['caption']); ?></p>
+                        <?php endif; ?>
+                        <?php if (!empty($row['contributor'])): ?>
+                            <div class="contributor-info justify-content-center">
+                                <i class="fas fa-user"></i> 
+                                <?php echo htmlspecialchars($row['contributor']); ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach;
+
+        echo '</div></div>';
+        unset($grouped['Graduation Class Picture']);
+    endif;
 
     // Graduation section first
     if (isset($grouped['Graduation'])):
         echo '<div class="yearbook-section graduation-section" data-event="graduation">';
-        echo '<h3 class="text-primary">🎓 Class of '.$grouped['Graduation'][0]['batch_year'].' – Graduation Portraits</h3><div class="row">';
+        echo '<div class="section-header">';
+        echo '<h3 class="text-secondary">🎓 Class of '.$grouped['Graduation'][0]['batch_year'].' – Graduation Portraits</h3>';
+        echo '</div>';
+        echo '<div class="row">';
+        
         foreach ($grouped['Graduation'] as $row): ?>
-            <div class="col-md-3 mb-3">
-                <div class="card h-100">
-                    <div class="img-container">
-                        <img src="<?php echo isset($img[$row['id']]) ? $fpath.'/'.$img[$row['id']] : 'assets/images/no-image.png'; ?>" class="card-img-top full-img">
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="card h-100 shadow-sm card border-secondary shadow h-100">
+                    <div class="consistent-img-container">
+                        <img src="<?php echo isset($img[$row['id']]) ? $fpath.'/'.$img[$row['id']] : 'assets/images/no-image.png'; ?>" class="consistent-img" alt="Graduation Portrait">
                     </div>
-                    <div class="card-body">
-                        <strong><?php echo htmlspecialchars($row['title']); ?></strong><br>
-                        <small class="text-muted"><?php echo htmlspecialchars($row['caption']); ?></small><br>
-                        <?php if ($row['contributor']): ?>
-                            <div class="mt-1"><i class="fas fa-user"></i> <?php echo htmlspecialchars($row['contributor']); ?></div>
+                    <div class="card-body-centered">
+                        <h6 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h6>
+                        <?php if (!empty($row['caption'])): ?>
+                            <p class="card-caption"><?php echo htmlspecialchars($row['caption']); ?></p>
+                        <?php endif; ?>
+                        <?php if (!empty($row['contributor'])): ?>
+                            <div class="contributor-info">
+                                <i class="fas fa-user"></i> 
+                                <?php echo htmlspecialchars($row['contributor']); ?>
+                            </div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -99,82 +305,160 @@ if (isset($_POST['batch_id'])) {
     endif;
 
     // Other event sections
-    // Other event sections
-    foreach($grouped as $event => $rows):
-        $sectionClass = 'event-'.strtolower(str_replace(' ', '-', $event));
+    foreach ($grouped as $event => $rows):
+        $sectionClass = 'event-' . strtolower(str_replace(' ', '-', $event));
         $eventSlug = strtolower($event);
 
-        echo '<div class="yearbook-section '.$sectionClass.'" data-event="'.$eventSlug.'">';
-        echo '<h4 class="text-secondary">'.htmlspecialchars($event).'</h4>';
+        echo '<div class="yearbook-section ' . $sectionClass . '" data-event="' . $eventSlug . '">';
+        echo '<div class="section-header">';
+        echo '<h3 class="text-secondary">' . htmlspecialchars($event) . '</h3>';
+        echo '</div>';
 
-        // "Field Trip" – timeline style
-        if ($eventSlug === 'field trip') {
-            echo '<div class="timeline">';
+        // Layout switcher
+        if (in_array($event, ['Field Trip', 'Retreat'])) {
+            // COMPACT grid layout instead of timeline
+            echo '<div class="row">';
             foreach ($rows as $row): ?>
-                <div class="timeline-item mb-4 p-3 border rounded">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <img src="<?php echo isset($img[$row['id']]) ? $fpath.'/'.$img[$row['id']] : 'assets/images/no-image.png'; ?>" class="img-fluid rounded">
+                <div class="col-lg-4 col-md-6 mb-3 compact-card">
+                    <div class="card h-100 shadow-sm">
+                        <div class="consistent-img-container">
+                            <img src="<?php echo isset($img[$row['id']]) ? $fpath . '/' . $img[$row['id']] : 'assets/images/no-image.png'; ?>" class="consistent-img" alt="<?php echo htmlspecialchars($row['title']); ?>">
                         </div>
-                        <div class="col-md-8">
-                            <h5><?php echo htmlspecialchars($row['title']); ?></h5>
-                            <p class="text-muted"><?php echo htmlspecialchars($row['caption']); ?></p>
-                            <?php if ($row['contributor']): ?>
-                                <small><i class="fas fa-user"></i> <?php echo htmlspecialchars($row['contributor']); ?></small>
+                        <div class="card-body card-body-centered">
+                            <h6 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h6>
+                            <?php if (!empty($row['caption'])): ?>
+                                <p class="card-caption"><?php echo htmlspecialchars($row['caption']); ?></p>
+                            <?php endif; ?>
+                            <?php if (!empty($row['contributor'])): ?>
+                                <div class="contributor-info justify-content-center">
+                                    <i class="fas fa-user"></i> 
+                                    <?php echo htmlspecialchars($row['contributor']); ?>
+                                </div>
                             <?php endif; ?>
                         </div>
                     </div>
                 </div>
             <?php endforeach;
-            echo '</div>'; // end timeline
+            echo '</div>';
 
-        // "Educational Tour" – full-width layout without card
-        } elseif ($eventSlug === 'educational tour') {
+        } elseif (in_array($event, ['Educational Tour', 'Foundation Week'])) {
+            // COMPACT grid layout instead of full-width horizontal
             echo '<div class="row">';
             foreach ($rows as $row): ?>
-                <div class="col-md-12 mb-4 d-flex align-items-center border rounded p-3">
-                    <div class="col-md-4 p-0">
-                        <img src="<?php echo isset($img[$row['id']]) ? $fpath.'/'.$img[$row['id']] : 'assets/images/no-image.png'; ?>" class="img-fluid rounded">
-                    </div>
-                    <div class="col-md-8 ps-3">
-                        <h5><?php echo htmlspecialchars($row['title']); ?></h5>
-                        <p class="text-muted"><?php echo htmlspecialchars($row['caption']); ?></p>
-                        <?php if ($row['contributor']): ?>
-                            <small class="text-muted"><i class="fas fa-user"></i> <?php echo htmlspecialchars($row['contributor']); ?></small>
-                        <?php endif; ?>
+                <div class="col-lg-4 col-md-6 mb-3 compact-card">
+                    <div class="card h-100 shadow-sm">
+                        <div class="consistent-img-container">
+                            <img src="<?php echo isset($img[$row['id']]) ? $fpath . '/' . $img[$row['id']] : 'assets/images/no-image.png'; ?>" class="consistent-img" alt="<?php echo htmlspecialchars($row['title']); ?>">
+                        </div>
+                        <div class="card-body card-body-centered">
+                            <h6 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h6>
+                            <?php if (!empty($row['caption'])): ?>
+                                <p class="card-caption"><?php echo htmlspecialchars($row['caption']); ?></p>
+                            <?php endif; ?>
+                            <?php if (!empty($row['contributor'])): ?>
+                                <div class="contributor-info justify-content-center">
+                                    <i class="fas fa-user"></i> 
+                                    <?php echo htmlspecialchars($row['contributor']); ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             <?php endforeach;
             echo '</div>';
 
-        // Default grid for all other events without card
-        } else {
+        } elseif (in_array($event, ['Intrams', 'Recognition'])) {
+            // Grid layout
             echo '<div class="row">';
             foreach ($rows as $row): ?>
-                <div class="col-md-3 mb-3 text-center">
-                    <img src="<?php echo isset($img[$row['id']]) ? $fpath.'/'.$img[$row['id']] : 'assets/images/no-image.png'; ?>" class="img-fluid rounded mb-2" style="height: 200px; object-fit: cover;">
-                    <div>
-                        <strong><?php echo htmlspecialchars($row['title']); ?></strong><br>
-                        <small class="text-muted"><?php echo htmlspecialchars($row['caption']); ?></small><br>
-                        <?php if ($row['contributor']): ?>
-                            <div class="mt-1"><i class="fas fa-user"></i> <?php echo htmlspecialchars($row['contributor']); ?></div>
-                        <?php endif; ?>
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="consistent-img-container">
+                            <img src="<?php echo isset($img[$row['id']]) ? $fpath . '/' . $img[$row['id']] : 'assets/images/no-image.png'; ?>" 
+                                 class="consistent-img" 
+                                 alt="<?php echo htmlspecialchars($row['title']); ?>">
+                        </div>
+                        <div class="card-body-centered">
+                            <h6 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h6>
+                            <?php if (!empty($row['caption'])): ?>
+                                <p class="card-caption"><?php echo htmlspecialchars($row['caption']); ?></p>
+                            <?php endif; ?>
+                            <?php if (!empty($row['contributor'])): ?>
+                                <div class="contributor-info justify-content-center">
+                                    <i class="fas fa-user"></i> 
+                                    <?php echo htmlspecialchars($row['contributor']); ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach;
+            echo '</div>';
+
+        } elseif (in_array($event, ['Graduation Ball'])) {
+            // Fancier layout
+            echo '<div class="row">';
+            foreach ($rows as $row): ?>
+                <div class="col-md-6 mb-4">
+                    <div class="card border-secondary shadow h-100 ">
+                        <div class="consistent-img-container">
+                            <img src="<?php echo isset($img[$row['id']]) ? $fpath . '/' . $img[$row['id']] : 'assets/images/no-image.png'; ?>" class="consistent-img" alt="<?php echo htmlspecialchars($row['title']); ?>">
+                        </div>
+                        <div class="card-body-centered">
+                            <h5 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h5>
+                            <?php if (!empty($row['caption'])): ?>
+                                <p class="card-caption"><?php echo htmlspecialchars($row['caption']); ?></p>
+                            <?php endif; ?>
+                            <?php if (!empty($row['contributor'])): ?>
+                                <div class="contributor-info justify-content-center">
+                                    <i class="fas fa-user"></i> 
+                                    <?php echo htmlspecialchars($row['contributor']); ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach;
+            echo '</div>';
+
+        } else {
+            // Generic fallback layout
+            echo '<div class="row">';
+            foreach ($rows as $row): ?>
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="consistent-img-container">
+                            <img src="<?php echo isset($img[$row['id']]) ? $fpath . '/' . $img[$row['id']] : 'assets/images/no-image.png'; ?>" 
+                                 class="consistent-img" 
+                                 alt="<?php echo htmlspecialchars($row['title']); ?>">
+                        </div>
+                        <div class="card-body-centered">
+                            <h6 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h6>
+                            <?php if (!empty($row['caption'])): ?>
+                                <p class="card-caption"><?php echo htmlspecialchars($row['caption']); ?></p>
+                            <?php endif; ?>
+                            <?php if (!empty($row['contributor'])): ?>
+                                <div class="contributor-info justify-content-center">
+                                    <i class="fas fa-user"></i> 
+                                    <?php echo htmlspecialchars($row['contributor']); ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             <?php endforeach;
             echo '</div>';
         }
 
-        echo '<hr class="my-4">';  // Add horizontal line between sections
-        echo '</div>'; // End event section
+        echo '<hr class="section-divider">';
+        echo '</div>'; // End section
     endforeach;
 
-
 } else {
-    echo '<div class="alert alert-danger text-center">Invalid batch selection.</div>';
+    // Instead of showing error message, just show nothing or a subtle loading state
+    echo '<div class="text-center" style="display: none;">Please select a batch to view photos.</div>';
 }
 ?>
-
 
 <script>
 $(document).ready(function(){
@@ -185,6 +469,15 @@ $(document).ready(function(){
         } else {
             $('.yearbook-section').hide();
             $('.yearbook-section[data-event="'+selected+'"]').show();
+        }
+    });
+
+    // Hide any "no photos found" messages that might appear
+    $('.alert-warning, .alert-danger').each(function() {
+        if ($(this).text().toLowerCase().includes('no photos') || 
+            $(this).text().toLowerCase().includes('no gallery') ||
+            $(this).text().toLowerCase().includes('invalid batch')) {
+            $(this).hide();
         }
     });
 });

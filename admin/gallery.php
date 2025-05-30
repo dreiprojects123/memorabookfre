@@ -33,6 +33,8 @@
 							<option value="Retreat">Retreat</option>
 							<option value="Educational Tour">Educational Tour</option>
 							<option value="Graduation">Graduation</option>
+							<option value="Graduation Class Picture">Graduation Class Picture</option>
+							<option value="Class Picture">Class Picture</option>
 							<option value="Recognition">Recognition</option>
 							<option value="Intrams">Intrams</option>
 							<option value="Foundation Week">Foundation Week</option>
@@ -55,7 +57,7 @@
 
 					<!-- Contributor Name -->
 					<div class="form-group">
-					<label class="control-label">Contributor</label>
+					<label class="control-label">Department/Course</label>
 					<input type="text" class="form-control" name="contributor" placeholder="Your name (admin)">
 					</div>
 
