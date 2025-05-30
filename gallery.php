@@ -191,28 +191,37 @@ header.masthead {
     </div>
     <div class="row">
       <?php
-      // Get all batches with gallery count
       $batch_query = $conn->query("
-        SELECT b.id, b.year, COUNT(g.id) as gallery_count 
-        FROM batch b 
-        LEFT JOIN gallery g ON b.id = g.batch_id 
-        GROUP BY b.id, b.year 
-        HAVING gallery_count > 0
-        ORDER BY b.year DESC
+          SELECT id, year, img AS batch_cover 
+          FROM batch 
+          ORDER BY year DESC
       ");
-      
-      while($batch_row = $batch_query->fetch_assoc()):
+
+       while ($batch_row = $batch_query->fetch_assoc()):
+          $cover_path = 'Admin/assets/uploads/batch/' . $batch_row['batch_cover'];
+          $cover_img = is_file($cover_path) ? $cover_path : 'assets/images/no-image.png';
       ?>
-      <div class="col-md-4 col-lg-3">
-        <div class="card batch-card" data-batch-id="<?php echo $batch_row['id'] ?>" data-batch-year="<?php echo $batch_row['year'] ?>">
-          <div class="card-body">
-            <div class="batch-year">Batch <?php echo $batch_row['year'] ?></div>
-            <div class="batch-count"><?php echo $batch_row['gallery_count'] ?> Photo<?php echo $batch_row['gallery_count'] > 1 ? 's' : '' ?></div>
+        <div class="col-md-4 col-lg-3 mb-4">
+          <div class="card text-white shadow batch-card"
+              data-batch-id="<?php echo $batch_row['id'] ?>"
+              data-batch-year="<?php echo $batch_row['year'] ?>"
+              style="
+                background: url('<?php echo $cover_img ?>') center center / cover no-repeat;
+                min-height: 200px;
+                border-radius: 10px;
+                overflow: hidden;
+                position: relative;
+              ">
+            <div class="card-body d-flex flex-column justify-content-end">
+              <h5 class="batch-year mb-1 font-weight-bold">Batch <?php echo $batch_row['year'] ?></h5>
+            </div>
           </div>
         </div>
-      </div>
       <?php endwhile; ?>
     </div>
+
+
+
   </div>
 </div>
 
