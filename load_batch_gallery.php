@@ -271,42 +271,87 @@ if (isset($_POST['batch_id'])) {
         unset($grouped['Graduation Class Picture']);
     endif;
 
-    // Graduation section first
-    if (isset($grouped['Graduation'])):
-        echo '<div class="yearbook-section graduation-section" data-event="graduation">';
-        echo '<div class="section-header">';
-        echo '<h3 class="text-secondary">🎓 Class of '.$grouped['Graduation'][0]['batch_year'].' – Graduation Portraits</h3>';
-        echo '</div>';
-        echo '<div class="row">';
-        
-        foreach ($grouped['Graduation'] as $row): ?>
-            <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card h-100 shadow-sm card border-secondary shadow h-100">
-                    <div class="consistent-img-container">
-                        <img src="<?php echo isset($img[$row['id']]) ? $fpath.'/'.$img[$row['id']] : 'assets/images/no-image.png'; ?>" class="consistent-img" alt="Graduation Portrait">
-                    </div>
-                    <div class="card-body-centered">
-                        <h6 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h6>
-                        <?php if (!empty($row['caption'])): ?>
-                            <p class="card-caption"><?php echo htmlspecialchars($row['caption']); ?></p>
-                        <?php endif; ?>
-                        <?php if (!empty($row['contributor'])): ?>
-                            <div class="contributor-info">
-                                <i class="fas fa-user"></i> 
-                                <?php echo htmlspecialchars($row['contributor']); ?>
+    // Graduation Class Picture section - Full Section View grouped by course
+    // Combine and group both Graduation Class Picture and Graduation by course
+    $combinedByCourse = [];
+
+    // Group class pictures
+    if (isset($grouped['Graduation Class Picture'])) {
+        foreach ($grouped['Graduation Class Picture'] as $row) {
+            $course = trim($row['contributor']) ?: 'Unspecified Course';
+            $combinedByCourse[$course]['class_picture'][] = $row;
+        }
+        unset($grouped['Graduation Class Picture']);
+    }
+
+    // Group portraits
+    if (isset($grouped['Graduation'])) {
+        foreach ($grouped['Graduation'] as $row) {
+            $course = trim($row['contributor']) ?: 'Unspecified Course';
+            $combinedByCourse[$course]['portraits'][] = $row;
+        }
+        unset($grouped['Graduation']);
+    }
+
+    // Now render each course with class picture and portraits
+    echo '<section class="grad-combined-section py-5" style="background-color: #f9f9f9;">';
+    echo '<div class="container">';
+    echo '<h2 class="text-center text-success mb-5">🎓Graduates</h2>';
+
+    foreach ($combinedByCourse as $course => $data):
+        echo '<div class="mb-5">';
+        echo '<h3 class="text-center text-black mb-4">📘 ' . htmlspecialchars($course) . '</h3>';
+
+        // Class Picture (full-width card)
+        if (!empty($data['class_picture'])):
+            foreach ($data['class_picture'] as $row): ?>
+                <div class="row justify-content-center mb-4">
+                    <div class="col-lg-10">
+                        <div class="card border-0 shadow-lg">
+                            <img src="<?php echo isset($img[$row['id']]) ? $fpath . '/' . $img[$row['id']] : 'assets/images/no-image.png'; ?>" class="card-img-top w-100" style="max-height: 600px; object-fit: cover;">
+                            <div class="card-body text-center">
+                                <h5 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h5>
+                                <p class="card-text text-muted"><?php echo htmlspecialchars($row['caption']); ?></p>
+                                <?php if ($row['contributor']): ?>
+                                    <p class="card-text"><i class="fas fa-user"></i> <?php echo htmlspecialchars($row['contributor']); ?></p>
+                                <?php endif; ?>
                             </div>
-                        <?php endif; ?>
+                        </div>
                     </div>
                 </div>
-            </div>
-        <?php endforeach;
-        echo '</div></div>';
-        unset($grouped['Graduation']);
-    endif;
+            <?php endforeach;
+        endif;
+
+        // Graduation Portraits (grid)
+        if (!empty($data['portraits'])):
+            echo '<div class="row">';
+            foreach ($data['portraits'] as $row): ?>
+                <div class="col-md-3 mb-3">
+                    <div class="card h-100">
+                        <div class="img-container">
+                            <img src="<?php echo isset($img[$row['id']]) ? $fpath . '/' . $img[$row['id']] : 'assets/images/no-image.png'; ?>" class="card-img-top full-img">
+                        </div>
+                        <div class="card-body">
+                            <strong><?php echo htmlspecialchars($row['title']); ?></strong><br>
+                            <small class="text-muted"><?php echo htmlspecialchars($row['caption']); ?></small><br>
+                            <?php if ($row['contributor']): ?>
+                                <div class="mt-1"><i class="fas fa-user"></i> <?php echo htmlspecialchars($row['contributor']); ?></div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach;
+            echo '</div>';
+        endif;
+
+        echo '</div><hr>';
+    endforeach;
+
+    echo '</div></section>';
 
     // Other event sections
-    foreach ($grouped as $event => $rows):
-        $sectionClass = 'event-' . strtolower(str_replace(' ', '-', $event));
+    foreach($grouped as $event => $rows):
+        $sectionClass = 'event-'.strtolower(str_replace(' ', '-', $event));
         $eventSlug = strtolower($event);
 
         echo '<div class="yearbook-section ' . $sectionClass . '" data-event="' . $eventSlug . '">';
@@ -314,136 +359,47 @@ if (isset($_POST['batch_id'])) {
         echo '<h3 class="text-secondary">' . htmlspecialchars($event) . '</h3>';
         echo '</div>';
 
-        // Layout switcher
-        if (in_array($event, ['Field Trip', 'Retreat'])) {
-            // COMPACT grid layout instead of timeline
+        // "Field Trip" – timeline style
+        if (in_array($eventSlug, [
+            'field trip',
+            'educational tour',
+            'retreat',
+            'recognition',
+            'intrams',
+            'foundation week',
+            'graduation ball',
+            'others'
+        ])) {
             echo '<div class="row">';
-            foreach ($rows as $row): ?>
-                <div class="col-lg-4 col-md-6 mb-3 compact-card">
-                    <div class="card h-100 shadow-sm">
-                        <div class="consistent-img-container">
-                            <img src="<?php echo isset($img[$row['id']]) ? $fpath . '/' . $img[$row['id']] : 'assets/images/no-image.png'; ?>" class="consistent-img" alt="<?php echo htmlspecialchars($row['title']); ?>">
-                        </div>
-                        <div class="card-body card-body-centered">
-                            <h6 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h6>
-                            <?php if (!empty($row['caption'])): ?>
-                                <p class="card-caption"><?php echo htmlspecialchars($row['caption']); ?></p>
-                            <?php endif; ?>
-                            <?php if (!empty($row['contributor'])): ?>
-                                <div class="contributor-info justify-content-center">
-                                    <i class="fas fa-user"></i> 
-                                    <?php echo htmlspecialchars($row['contributor']); ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
+            foreach ($rows as $index => $row):
+                $isEven = $index % 2 === 0;
+                ?>
+                <div class="col-md-12 mb-4 d-flex flex-column flex-md-row <?php echo $isEven ? '' : 'flex-md-row-reverse'; ?> align-items-center border rounded p-3">
+                    <div class="col-md-4 p-0">
+                        <img src="<?php echo isset($img[$row['id']]) ? $fpath.'/'.$img[$row['id']] : 'assets/images/no-image.png'; ?>" class="img-fluid rounded w-100">
+                    </div>
+                    <div class="col-md-8 ps-md-3 pe-md-3">
+                        <h5><?php echo htmlspecialchars($row['title']); ?></h5>
+                        <p class="text-muted"><?php echo htmlspecialchars($row['caption']); ?></p>
+                        <?php if ($row['contributor']): ?>
+                            <small class="text-muted"><i class="fas fa-user"></i> <?php echo htmlspecialchars($row['contributor']); ?></small>
+                        <?php endif; ?>
                     </div>
                 </div>
             <?php endforeach;
             echo '</div>';
-
-        } elseif (in_array($event, ['Educational Tour', 'Foundation Week'])) {
-            // COMPACT grid layout instead of full-width horizontal
-            echo '<div class="row">';
-            foreach ($rows as $row): ?>
-                <div class="col-lg-4 col-md-6 mb-3 compact-card">
-                    <div class="card h-100 shadow-sm">
-                        <div class="consistent-img-container">
-                            <img src="<?php echo isset($img[$row['id']]) ? $fpath . '/' . $img[$row['id']] : 'assets/images/no-image.png'; ?>" class="consistent-img" alt="<?php echo htmlspecialchars($row['title']); ?>">
-                        </div>
-                        <div class="card-body card-body-centered">
-                            <h6 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h6>
-                            <?php if (!empty($row['caption'])): ?>
-                                <p class="card-caption"><?php echo htmlspecialchars($row['caption']); ?></p>
-                            <?php endif; ?>
-                            <?php if (!empty($row['contributor'])): ?>
-                                <div class="contributor-info justify-content-center">
-                                    <i class="fas fa-user"></i> 
-                                    <?php echo htmlspecialchars($row['contributor']); ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach;
-            echo '</div>';
-
-        } elseif (in_array($event, ['Intrams', 'Recognition'])) {
-            // Grid layout
-            echo '<div class="row">';
-            foreach ($rows as $row): ?>
-                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="consistent-img-container">
-                            <img src="<?php echo isset($img[$row['id']]) ? $fpath . '/' . $img[$row['id']] : 'assets/images/no-image.png'; ?>" 
-                                 class="consistent-img" 
-                                 alt="<?php echo htmlspecialchars($row['title']); ?>">
-                        </div>
-                        <div class="card-body-centered">
-                            <h6 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h6>
-                            <?php if (!empty($row['caption'])): ?>
-                                <p class="card-caption"><?php echo htmlspecialchars($row['caption']); ?></p>
-                            <?php endif; ?>
-                            <?php if (!empty($row['contributor'])): ?>
-                                <div class="contributor-info justify-content-center">
-                                    <i class="fas fa-user"></i> 
-                                    <?php echo htmlspecialchars($row['contributor']); ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach;
-            echo '</div>';
-
-        } elseif (in_array($event, ['Graduation Ball'])) {
-            // Fancier layout
-            echo '<div class="row">';
-            foreach ($rows as $row): ?>
-                <div class="col-md-6 mb-4">
-                    <div class="card border-secondary shadow h-100 ">
-                        <div class="consistent-img-container">
-                            <img src="<?php echo isset($img[$row['id']]) ? $fpath . '/' . $img[$row['id']] : 'assets/images/no-image.png'; ?>" class="consistent-img" alt="<?php echo htmlspecialchars($row['title']); ?>">
-                        </div>
-                        <div class="card-body-centered">
-                            <h5 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h5>
-                            <?php if (!empty($row['caption'])): ?>
-                                <p class="card-caption"><?php echo htmlspecialchars($row['caption']); ?></p>
-                            <?php endif; ?>
-                            <?php if (!empty($row['contributor'])): ?>
-                                <div class="contributor-info justify-content-center">
-                                    <i class="fas fa-user"></i> 
-                                    <?php echo htmlspecialchars($row['contributor']); ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach;
-            echo '</div>';
-
         } else {
             // Generic fallback layout
             echo '<div class="row">';
             foreach ($rows as $row): ?>
-                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="consistent-img-container">
-                            <img src="<?php echo isset($img[$row['id']]) ? $fpath . '/' . $img[$row['id']] : 'assets/images/no-image.png'; ?>" 
-                                 class="consistent-img" 
-                                 alt="<?php echo htmlspecialchars($row['title']); ?>">
-                        </div>
-                        <div class="card-body-centered">
-                            <h6 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h6>
-                            <?php if (!empty($row['caption'])): ?>
-                                <p class="card-caption"><?php echo htmlspecialchars($row['caption']); ?></p>
-                            <?php endif; ?>
-                            <?php if (!empty($row['contributor'])): ?>
-                                <div class="contributor-info justify-content-center">
-                                    <i class="fas fa-user"></i> 
-                                    <?php echo htmlspecialchars($row['contributor']); ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
+                <div class="col-md-12 mb-3 text-center">
+                    <img src="<?php echo isset($img[$row['id']]) ? $fpath.'/'.$img[$row['id']] : 'assets/images/no-image.png'; ?>" class="img-fluid rounded mb-2" style="height: 200px; object-fit: cover;">
+                    <div>
+                        <strong><?php echo htmlspecialchars($row['title']); ?></strong><br>
+                        <small class="text-muted"><?php echo htmlspecialchars($row['caption']); ?></small><br>
+                        <?php if ($row['contributor']): ?>
+                            <div class="mt-1"><i class="fas fa-user"></i> <?php echo htmlspecialchars($row['contributor']); ?></div>
+                        <?php endif; ?>
                     </div>
                 </div>
             <?php endforeach;

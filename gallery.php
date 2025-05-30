@@ -347,7 +347,7 @@ function filterGallery() {
   let query = $('#filter').val().toLowerCase();
   $('.card.gallery-list').each(function() {
     let aboutText = $(this).find('.truncate').data('about') ? $(this).find('.truncate').data('about').toLowerCase() : '';
-    let eventText = $(this).find('.event-name').text() ? $(this).find('.event-name').text().toLowerCase() : '';
+    let eventText = $(this).find('.event').text() ? $(this).find('.event').text().toLowerCase() : '';
     let titleText = $(this).find('.image-title').text() ? $(this).find('.image-title').text().toLowerCase() : '';
     let captionText = $(this).find('.image-caption').text() ? $(this).find('.image-caption').text().toLowerCase() : '';
     
