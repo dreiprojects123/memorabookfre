@@ -55,7 +55,7 @@
 
 					<!-- Contributor Name -->
 					<div class="form-group">
-					<label class="control-label">Contributor</label>
+					<label class="control-label">Department/Course</label>
 					<input type="text" class="form-control" name="contributor" placeholder="Your name (admin)">
 					</div>
 
