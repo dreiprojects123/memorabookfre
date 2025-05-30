@@ -65,6 +65,46 @@ header.masthead {
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
+  height: 250px; /* Increased height to accommodate image */
+  position: relative;
+}
+
+.card.batch-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+}
+
+.batch-cover-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-top-left-radius: var(--card-radius);
+  border-top-right-radius: var(--card-radius);
+}
+
+.batch-info {
+  padding: 1rem;
+  text-align: center;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.batch-year {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.batch-count {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Fallback styling for batches without cover images */
+.batch-card.no-cover {
   height: 200px;
   display: flex;
   align-items: center;
@@ -72,32 +112,21 @@ header.masthead {
   text-align: center;
 }
 
-.card.batch-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+.batch-card.no-cover:hover {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: white;
 }
 
-.batch-year {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: var(--primary-color);
-  transition: color 0.3s ease;
-}
-
-.card.batch-card:hover .batch-year {
+.batch-card.no-cover:hover .batch-year {
   color: white;
 }
 
-.batch-count {
-  font-size: 1rem;
-  color: #666;
-  margin-top: 0.5rem;
+.batch-card.no-cover:hover .batch-count {
+  color: rgba(255,255,255,0.9);
 }
 
-.card.batch-card:hover .batch-count {
-  color: rgba(255,255,255,0.9);
+.batch-card.no-cover .batch-year {
+  font-size: 2.5rem;
 }
 
 .gallery-img img {
@@ -170,47 +199,44 @@ header.masthead {
 }
 </style>
 
-<header class="masthead d-flex align-items-center">
-    <div class="container">
-        <div class="row h-100 align-items-center justify-content-center text-center">
-            <div class="col-lg-8 align-self-end mb-4 page-title">
-                <h3 class="text-white">Year Book</h3>
-                <hr class="divider my-4" />
-            </div>
-        </div>
-    </div>
-</header>
+<br><br><br><br><br>
 
 <!-- Batch Selection View -->
 <div id="batch-selection">
   <div class="container mt-5">
     <div class="row">
       <div class="col-12">
-        <h4 class="text-center mb-4">Select a Batch Year to View Gallery</h4>
+        <h4 class="text-center mb-4"><strong>Through the Years – MemoraBook Gallery</strong></h4>
       </div>
     </div>
-    <div class="row">
+<div class="row">
       <?php
-      // Get all batches with gallery count
       $batch_query = $conn->query("
-        SELECT b.id, b.year, COUNT(g.id) as gallery_count 
-        FROM batch b 
-        LEFT JOIN gallery g ON b.id = g.batch_id 
-        GROUP BY b.id, b.year 
-        HAVING gallery_count > 0
-        ORDER BY b.year DESC
+          SELECT id, year, img AS batch_cover 
+          FROM batch 
+          ORDER BY year DESC
       ");
-      
-      while($batch_row = $batch_query->fetch_assoc()):
+
+      while ($batch_row = $batch_query->fetch_assoc()):
+          $cover_path = 'Admin/assets/uploads/batch/' . $batch_row['batch_cover'];
+          $cover_img = is_file($cover_path) ? $cover_path : 'assets/images/no-image.png';
       ?>
-      <div class="col-md-4 col-lg-3">
-        <div class="card batch-card" data-batch-id="<?php echo $batch_row['id'] ?>" data-batch-year="<?php echo $batch_row['year'] ?>">
-          <div class="card-body">
-            <div class="batch-year">Batch <?php echo $batch_row['year'] ?></div>
-            <div class="batch-count"><?php echo $batch_row['gallery_count'] ?> Photo<?php echo $batch_row['gallery_count'] > 1 ? 's' : '' ?></div>
+        <div class="col-md-4 col-lg-3 mb-4">
+          <div class="card text-white shadow batch-card"
+              data-batch-id="<?php echo $batch_row['id'] ?>"
+              data-batch-year="<?php echo $batch_row['year'] ?>"
+              style="
+                background: url('<?php echo $cover_img ?>') center center / cover no-repeat;
+                min-height: 200px;
+                border-radius: 10px;
+                overflow: hidden;
+                position: relative;
+              ">
+            <div class="card-body d-flex flex-column justify-content-end">
+              <h5 class="batch-year mb-1 font-weight-bold">Batch <?php echo $batch_row['year'] ?></h5>
+            </div>
           </div>
         </div>
-      </div>
       <?php endwhile; ?>
     </div>
   </div>
